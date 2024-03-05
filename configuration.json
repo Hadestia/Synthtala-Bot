@@ -6,10 +6,10 @@
     "database": true,
     "logger": true,
     "isMaintenance": false,
-    "allowPrivateMessage": true,
+    "allowPrivateMessage": false,
     "autoClean": false,
     "adminOnly": false,
-    "helpCommandDecor": "gif",
+    "helpCommandDecor": "none",
     "updateRepo": "",
     "botOwners": [
         "100011406903784"
@@ -30,6 +30,6 @@
         "online": true,
         "autoMarkRead": false,
         "autoMarkDelivery": false,
-        "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36"
+        "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
     }
 }

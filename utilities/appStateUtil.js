@@ -2,85 +2,157 @@ const Path = require('path');
 const Filesystem = require('fs-extra');
 const Util = require('./utils.js');
 
-function error(msg) {
-	return `Invalid AppState: ${msg}`;
+function error(msg, name) {
+	let err = new Error(msg);
+	if (name) {
+		err.name = name;
+	} else {
+		err.name = 'AppStateError';
+	}
+	return err;
 }
 
-module.exports.parse = function ( stringifyAppstate, fromFolder, CLIENT ) {
+function filterKeysAppState(appState) {
+	return appState.filter(item => ["c_user", "xs", "datr", "fr", "sb", "i_user"].includes(item.key));
+}
+
+function returnAndSaveAppstate (id, credentialObj, CLIENT) {
+	const path = Path.join(CLIENT.APPSTATE_PATH, `${id}.json`);
+	const fcaConfig = CLIENT.CONFIG.FCAOption;
+	const userAgent = (credentialObj) ? ((credentialObj.login) ? credentialObj.login.userAgent || fcaConfig.userAgent : fcaConfig.userAgent) : fcaConfig.userAgent;
+	Filesystem.writeJsonSync(path, credentialObj, { spaces: '\t' });
+	return {
+		botID: id,
+		userAgent,
+		botAppState: JSON.stringify(credentialObj.appstate),
+	};
+}
+
+async function getAppState(loginCredential, CLIENT) {
 	
-	const promise = new Promise((resolve, reject) => {
+	const getFbState = require(Path.join(CLIENT.ROOT_PATH, 'utilities', 'getFbstate.js');
+	const { email, password, userAgent, proxy } = loginCredential;
+	let appstate, code2FATemp;
+	
+	try {
+		appstate = await getFbState(email.trim(), password.trim(), userAgent, proxy);
+	} catch (err) {
+		const loginMbasic = require(Path.join(CLIENT.ROOT_PATH, 'utilities', 'loginMbasic.js');
+		appstate = await loginMbasic({
+			email,
+			pass: password, 
+			twoFactorSecretOrCode: code2FATemp,
+			userAgent,
+			proxy
+		});
 		
-		const varType = typeof(stringifyAppstate);
-		if ( varType == 'undefined' || varType !== 'string' ) {
-			return reject(error('expected string but got null or other datatypes'));
-		}
+		appState = appState.map(item => {
+			item.key = item.name;
+			delete item.name;
+			return item;
+		});
+		appState = filterKeysAppState(appState);
+	}
 	
-		if (stringifyAppstate === '') {
-			return reject(error('expected string of OBJECTS[] but got NULL!!'));
-		}
+	return appState;
+}
+
+module.exports.parse = function ( credentialObj, path, CLIENT ) {
 	
-		let appStateData;
+	return new Promise(async(resolve, reject) => {
+		
+		const varType = typeof(credentialObj);
+		if ( varType == 'undefined' || varType !== 'object' ) {
+			return reject(error(`expected Object{} but got ${varType}.`));
+		}
 	
 		try {
-    		appStateData = JSON.parse(stringifyAppstate.replace(/\\/g, ''));
-			if (!Array.isArray(appStateData) || appStateData.some(obj => typeof obj !== 'object')) {
+			if (!Array.isArray(credentialObj) || credentialObj.some(obj => typeof obj !== 'object')) {
 				return reject(error('expected array of OBJECTS[] but got different value!!'));
 			}
 		} catch (err) {
 			return reject(error('this is not a valid JSON!!'));
 		}
-	
-		const requiredKeys = ['key', 'value', 'domain', 'path', 'hostOnly', 'creation', 'lastAccessed'];
-		const isValidAppState = appStateData.every(state =>
-			requiredKeys.every(key => Object.prototype.hasOwnProperty.call(state, key))
-		);
-	
-		if (!isValidAppState) {
-			return reject(error('not adhered of required structure!!'));
-		}
-	
-		const appStateFiles = Util.getDirFiles(CLIENT.APPSTATE_PATH);
-		const existingAppStateValues = appStateFiles.flatMap((filename) => {
-			const filePath = Path.join(CLIENT.APPSTATE_PATH, filename);
-			try {
-				const fileContent = Filesystem.readFileSync(filePath, 'utf8');
-				const fileAppState = JSON.parse(fileContent);
-				return fileAppState;
-			} catch (err) {
-				return reject(error(`error parsing JSON in file ${filePath}: ${err}`));
-			}
-		});
 		
-		if (!fromFolder) {
-			const isDuplicate = appStateData.some(newCookie => 
-				existingAppStateValues.some(existingCookie => 
-					JSON.stringify(newCookie) === JSON.stringify(existingCookie)
-				)
-			);
-	
-			if (isDuplicate) {
-				return reject(error('duplicate appstate detected!!'));
+		// If appstate is already provided
+		if (credentialObj.appstate) {
+			
+			let appstate = credentialObj.appstate;
+			
+			if (appstate.some(i => i.name)) {
+				// fix invalid "key" keys
+				appstate = appstate.map(i => {
+					i.key = i.name;
+					delete i.name;
+					return i;
+				});
+			} else if (!appstate.some(i => i.key)) {
+				// missing "key" key 
+				return reject(error('Object.appstate not adhered of required structure!!'));
 			}
-		}
+			
+			
+			if (path) {
+				const appStateFiles = Util.getDirFiles(CLIENT.APPSTATE_PATH);
+				const existingAppStateValues = appStateFiles.flatMap((filename) => {
+					const filePath = Path.join(CLIENT.APPSTATE_PATH, filename);
+					if (filePath !== path) {
+						try {
+							const fileContent = Filesystem.readFileSync(filePath, 'utf8');
+							const fileAppState = JSON.parse(fileContent);
+							return fileAppState.appstate;
+						} catch (err) {
+							//return reject(error(`error parsing JSON in file ${filePath}: ${err}`));
+						}
+					}
+				});
+				
+				const isDuplicate = appstate.some(newCookie => 
+					existingAppStateValues.some(existingCookie => 
+						JSON.stringify(newCookie) === JSON.stringify(existingCookie)
+					)
+				);
 	
-		const fbUID = (appStateData.find(cookie => cookie.key === 'c_user') || { value: false }).value;
-		if (!fbUID) {
-			return reject(error('cannot find user ID!'));
+				if (isDuplicate) {
+					return reject(error('Duplicate app state detected'));
+				}
+			}
+			
+			const facebook_id = (appstate.find(cookie => cookie.key === 'c_user') || { value: false }).value;
+			if (!facebook_id) {
+				return reject(error('Cannot find user ID!'));
+			}
+			
+			credentialObj.appstate = appstate;
+			const data = returnAndSaveAppstate(facebook_id, credentialObj, CLIENT);
+			return resolve(data);
+			
+		// Login with login credentials
+		} else if (credentialObj.login) {
+			
+			const { email, password } = credentialObj.login;
+			
+			if (!email || !password) {
+				return reject(error('Object.login missing login credentials'));
+			}
+			
+			let appstate = getAppState(credentialObj.login, CLIENT)
+			
+			if (!appstate) {
+				return reject(error('Unable to get appstate from login credential'));
+			}
+			
+			const facebook_id = (appstate.find(cookie => cookie.key === 'c_user') || { value: false }).value;
+			if (!facebook_id) {
+				return reject(error('Cannot find user ID using login credential'));
+			}
+			
+			credentialObj.appstate = appstate;
+			const data = returnAndSaveAppstate(facebook_id, credentialObj, CLIENT);
+			return resolve(data);
+			
+		} else {
+			return reject(error('Object not adhered of required structure'));
 		}
-		return resolve({ botID: fbUID, botAppState: stringifyAppstate });
 	});
-	
-	return promise;
-	
-}
-
-module.exports.create_override = function ( stringifyAppstate, CLIENT) {
-	
-	const appStateData = JSON.parse(stringifyAppstate.replace(/\\/g, ''));
-	const id = (appStateData.find(cookie => cookie.key === 'c_user')).value;
-	const path = Path.join(CLIENT.APPSTATE_PATH, `${id}.json`);
-	
-	Filesystem.writeFileSync(path, JSON.stringify(appStateData, null, 4), 'utf8');
-	
-	return (Filesystem.existsSync(path)) ? true : false;
 }

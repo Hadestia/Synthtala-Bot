@@ -6,7 +6,7 @@ module.exports = async function ({ event, API, Utils }) {
 		API.sendMessage(form, threadID, callback, messageID);
 	}
 	
-	returns.reply = async (form, callback) => {
+	returns.reply = async (form, callback = function () {}) => {
 		await API.sendMessage(form, event.threadID, callback, event.messageID);
 	}
 	

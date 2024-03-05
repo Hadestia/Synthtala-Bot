@@ -27,7 +27,6 @@
         "@octokit/rest": "^20.0.1",
         "@distube/ytdl-core": "^4.13.3",
         "npmlog": "^1.2.0",
-        "nayan-media-downloader": "^2.0.2",
         "@types/node": "^18.0.6",
         "amethyste-api": "^1.1.6",
         "axios": "^1.6.1",

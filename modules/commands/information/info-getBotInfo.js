@@ -68,7 +68,7 @@ module.exports.run = async function ({ args, event, API, BOT_INFO, CLIENT, MODUL
 			{ body, attachment: Filesystem.createReadStream(musicPlayerPath) }
 		);
 	} else {
-		await Utils.makeMusicPanel(botName, 'Powered by Nasmerah', BOT_INFO.AVATAR_LINK, musicPlayerPath).then((Post_img) => {
+		await Utils.makeMusicPanel(botName, 'Powered by Synthala', BOT_INFO.AVATAR_LINK, musicPlayerPath).then((Post_img) => {
 			Message.reply(
 				{ body, attachment: Filesystem.createReadStream(Post_img.path) }
 			);

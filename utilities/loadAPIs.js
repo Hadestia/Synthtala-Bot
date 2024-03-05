@@ -17,8 +17,8 @@ module.exports = function ({ express, CLIENT, Logger }) {
 			for (var filename of files) {
 				try {
 					const api = require(Path.join(path, filename));
-					Router.get(api.name, api.index);
-					Logger.makeLog(CLIENT.LOG_PATH, `Router » /${api.name} was loaded.`, '--');
+					Router.get(api.name || api.path, api.index);
+					Logger.makeLog(CLIENT.LOG_PATH, `Router » ${api.name} was loaded.`, '--');
 				} catch (err) {
 					Logger.makeLog(CLIENT.LOG_PATH, `Router » Unable to load /${filename} with error ${err}`, 'warn');
 				}

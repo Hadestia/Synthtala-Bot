@@ -7,6 +7,7 @@ const Logger = require(Path.resolve(`${__dirname}/../utilities/logger.js`));
 let CLIENT,
 	MODULES,
 	APPSTATE,
+	USER_AGENT,
 	APPSTATE_PATH,
 	APPSTATE_FILENAME;
 
@@ -34,14 +35,19 @@ function start( input ) {
 	CLIENT = input.CLIENT;
 	MODULES = input.CLIENT.MODULES;
 	APPSTATE = input.APPSTATE;
+	USER_AGENT = input.USER_AGENT;
 	APPSTATE_FILENAME = input.APPSTATE_FILENAME;
 	APPSTATE_PATH = input.APPSTATE_PATH;
 	
 	const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 	
 	const Login = new Promise(function (resolved, reject) {
+		
 		const appState = JSON.parse(APPSTATE);
-		BotLogin({ appState }, async function (BOT_ERROR, API) {
+		let fcaOption = CLIENT.CONFIG.FCAOption;
+		fcaOption.userAgent = USER_AGENT;
+		
+		BotLogin({ appState }, fcaOption, async function (BOT_ERROR, API) {
 			if (BOT_ERROR) {
 				const msg = `Authentication error while logging: ${APPSTATE_FILENAME}`;
 				Logger(msg, 'login');
@@ -49,17 +55,7 @@ function start( input ) {
 				console.error(BOT_ERROR);
 				resolved( { ERROR: true, PATH: APPSTATE_PATH, API } );
 			}
-			API.setOptions(CLIENT.CONFIG.FCAOption);
-					
-			// Rename file e.g: "123xxxxxxx.json"
-			const ID = await API.getCurrentUserID();
-			const PATH = Path.join(CLIENT.APPSTATE_PATH, `${ID}.json`);
-			if (!Filesystem.existsSync(PATH) && APPSTATE_FILENAME !== '<ENV>') {
-				Filesystem.unlinkSync(APPSTATE_PATH);
-				Filesystem.writeJsonSync(PATH, appState, { spaces: '\t' });
-				APPSTATE_PATH = PATH;
-				APPSTATE_FILENAME = `${ID}.json`;
-			}
+			
 			resolved({ ID, API, PATH });
 		});
 	});
@@ -68,6 +64,7 @@ function start( input ) {
 	Login.then(async function ( LoginData ) {
 		
 		if ( LoginData.ERROR ) {
+			/* 
 			const regExp = new RegExp('^\!.*?\.json$'); // Exclude appstate that has this (!) symbol on the beginning
 			/// Delete this appstate
 			if (!regExp.test(LoginData.PATH)) {
@@ -77,6 +74,7 @@ function start( input ) {
 					Logger.makeLog(CLIENT.LOG_PATH, `Appstate was deleted!!`, 'warn');
 				}
 			}
+			*/
 			process.exit(0);
 		}
 		
@@ -187,7 +185,8 @@ function start( input ) {
 				const target = Object.keys(callbackListenTime).pop();
 				return new Promise((resolve) => {
 					if (target) {
-						callbackListenTime[key] = () => {};
+						
+						callbackListenTime[target] = () => {};
 						delete callbackListenTime[key];
 						resolve();
 					} else {
@@ -311,7 +310,6 @@ function start( input ) {
 			
 		}).catch(async (Model_Err) => {
 			
-			/// if database creation is unsuccessful
 			Logger(Model_Err, 'error');
 			Logger.makeLog(CLIENT.LOG_PATH, `Bot-${LoginData.ID} » Unable to create database model for this account, Exiting process...`, 'database');
 			Logger.makeLog(CLIENT.LOG_PATH, Model_Err);

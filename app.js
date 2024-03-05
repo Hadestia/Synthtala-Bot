@@ -39,7 +39,7 @@ const CLIENT = {
 	
 	APPSTATE_PATH: Path.join(process.cwd(), '@synthtala', 'appstates'),
 	
-	CONFIG: Filesystem.readJsonSync('./json/bot_configuration.json'),
+	CONFIG: Filesystem.readJsonSync('./configuration.json'),
 	
 	CONFIG_PATH: Path.join(process.cwd(), 'json', 'bot_configuration.json'),
 	
@@ -53,10 +53,6 @@ const CLIENT = {
 
 process.on('unhandledRejection', console.error);
 process.on('uncaughtException', console.error);
-
-/// Copy and Make a new Log.txt > Old logs will be sent to main bot on start up
-const time = Moment().tz('Asia/Manila').format('MMMM DD, YYYY');
-Filesystem.writeFileSync(CLIENT.LOG_PATH, `Logs Start Date » ${time} ==================>\n`); /*(Filesystem.existsSync(CLIENT.LOG_PATH)) ? Filesystem.readFileSync(CLIENT.LOG_PATH): Filesystem.writeFileSync(CLIENT.LOG_PATH, `Logs Start Date » ${time} ==================>\n`);*/
 
 const restartService = function () {
 	return new Promise (async (resolve, reject) => {
@@ -75,6 +71,8 @@ const restartService = function () {
 }
 
 const create_server = async function () {
+	
+	Filesystem.writeFileSync(CLIENT.LOG_PATH, '');
 	
 	Logger.makeLog(CLIENT.LOG_PATH, `${CLIENT.CONFIG.NAME} »`, '--');
 	
@@ -175,7 +173,13 @@ async function newSession ( appstate, appStatePath, fileName, restart) {
 	
 	// Parse AppState
 	const util_appState = require('./utilities/appStateUtil');
-	await util_appState.parse(appstate, true, CLIENT).then(async({ botID, botAppState }) => {
+	const path = (appStatePath == '<ENV>') ? false : appStatePath;
+	
+	await util_appState.parse(appstate, path, CLIENT).then(async({ botID, userAgent, botAppState }) => {
+		
+		if (CLIENT.AGENTS[botID] && !restart) {
+			reject(new Error(`Duplicate login detected for ${botID}. Skipping this session...`));
+		}
 		
 		Logger.makeLog(CLIENT.LOG_PATH, `${(restart) ? 'Restarting' : 'Starting new'} session for ${fileName}`, 'login');
 			
@@ -204,6 +208,7 @@ async function newSession ( appstate, appStatePath, fileName, restart) {
 			ID: botID,
 			CLIENT: CLIENT,
 			APPSTATE: botAppState,
+			USER_AGENT: userAgent,
 			APPSTATE_FILENAME: fileName,
 			APPSTATE_PATH: appStatePath
 		};
@@ -326,31 +331,36 @@ async function loginAgents() {
 		}
 	);
 	
+	/*
 	if (process.env.MAIN_APPSTATE) {
-		await newSession(process.env.MAIN_APPSTATE, '<>', '<ENV>').then((data) => {}).catch((err) => {
-			Logger.makeLog(CLIENT.LOG_PATH, `ENV APPSTATE » Error while starting new session`, 'error');
+		const credentialObj = {
+			appstate = JSON.parse(process.env.MAIN_APPSTATE);
+		};
+		await newSession(credentialObj, '<ENV>', '<ENV>').then((data) => {}).catch((err) => {
+			Logger.makeLog(CLIENT.LOG_PATH, `ENV APPSTATE » Error while starting session`, 'error');
 			Logger.makeLog(CLIENT.LOG_PATH, err, 'error');
 		});
 	}
+	*/
 	
 	for (const candidate of credentials) {
 		const candidatePath = Path.join(CLIENT.APPSTATE_PATH, candidate);
-		const appState = require(candidatePath);
+		const credentialObj = require(candidatePath);
 		if (!appState) {
-			Logger.makeLog(CLIENT.LOG_PATH, `Appstate "${candidate}" was not a valid JSON Object. Deleting file...`, 'warn');
-			Filesystem.unlinkSync(candidatePath);
-			Logger.makeLog(CLIENT.LOG_PATH, `File "${candidate}" was deleted!`, 'warn');
+			Logger.makeLog(CLIENT.LOG_PATH, `Appstate "${candidate}" was not a valid JSON!`, 'warn');
+			// Filesystem.unlinkSync(candidatePath);
+			// Logger.makeLog(CLIENT.LOG_PATH, `File "${candidate}" was deleted!`, 'warn');
 		} else {
 			// Parse appstate and create Session
-			const appstate = JSON.stringify(appState);
-			await newSession(appstate, candidatePath, candidate, false).then((data) => {}).catch((err) => {
-				Logger.makeLog(CLIENT.LOG_PATH, `${candidate} » Error While Starting New Session`, 'error');
+			// const appstate = JSON.stringify(appState);
+			await newSession(credentialObj, candidatePath, candidate, false).then((data) => {}).catch((err) => {
+				Logger.makeLog(CLIENT.LOG_PATH, `${candidate} » Error While Starting Session`, 'error');
 				Logger.makeLog(CLIENT.LOG_PATH, err, 'error');
 			});
 		}
 	}
 	
-	if (credentials.length == 0 && !process.env.MAIN_APPSTATE) {
+	if (credentials.length == 0) { // && !process.env.MAIN_APPSTATE) {
 		Logger.makeLog(CLIENT.LOG_PATH, `There's no credentials found to login.`, '--');
 	}
 }
