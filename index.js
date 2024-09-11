@@ -51,7 +51,7 @@ async function startServer() {
 		
 		if (!childServer) {
 			
-			process.setenv('isClientRestarting': '0');
+			process.env.IS_CLIENT_RESTART = 'false';
 			
 			childServer = spawn('node', ['startServer.js'], {
 				cwd: __dirname,
@@ -61,7 +61,7 @@ async function startServer() {
 		
 			childServer.on('close', (code) => {
 				if (code && code == 2) {
-					process.env.IS_CLIENT_RESTART = 'false';
+					process.env.IS_CLIENT_RESTART = 'true';
 					Logger.makeLog(logPath, 'RESTARTING PROJECT', '--');
 					startProject();
 				}
@@ -84,7 +84,7 @@ async function startServer() {
 		}
 		
 		const authKey = req.query.authKey || '';
-		if (authKey !== (process.env.AUTH_KEY || 'dummy-key') {
+		if (authKey !== (process.env.AUTH_KEY || 'dummy-key')) {
 			return res.status(401).json({ error: 'Invalid authentication key' });
 		} else {
 			if (!process.env.IS_CLIENT_RESTART || process.env.IS_CLIENT_RESTART == 'false') {
