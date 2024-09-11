@@ -1,0 +1,24 @@
+[
+    {
+        "id": "$cmd-fontStyle",
+        "type": "commands",
+        "version": "1.0.1",
+        "permission": 0,
+        "disabled": false,
+        "author": "Hadestia",
+        "name": "font-style",
+        "aliases": [
+            "font"
+        ],
+        "usage": "<font-number> <text/@reply>",
+        "description": "Replace string into specific font style.\n\n𝘼𝙫𝙖𝙞𝙡𝙖𝙗𝙡𝙚 𝙁𝙤𝙣𝙩𝙨:\n1 = 𝗯𝗼𝗹𝗱 𝘀𝗮𝗻𝘀\n2 = 𝙞𝙩𝙖𝙡𝙞𝙘 𝙗𝙤𝙡𝙙 𝙨𝙖𝙣𝙨\n3 = 𝐛𝐨𝐥𝐝 𝐬𝐞𝐫𝐢𝐟\n4 = 𝒊𝒕𝒂𝒍𝒊𝒄 𝒃𝒐𝒍𝒅 𝒔𝒆𝒓𝒊𝒇\n5 = 𝖒𝖊𝖉𝖎𝖊𝖛𝖆𝖑 𝖋𝖔𝖓𝖙\n6 = 𝚖𝚘𝚗𝚘𝚜𝚙𝚊𝚌𝚎",
+        "cooldown": 0,
+        "category": "tools",
+        "script": "tools-fontStyle.js",
+        "requiredArgument": 1,
+        "groupCommandOnly": false,
+        "needUserData": false,
+        "needGroupData": false,
+        "dependencies": {}
+    }
+]

@@ -1,0 +1,23 @@
+{
+    "@nasmerah": {
+        "appstates": {},
+        "database": {
+            "datas": {},
+            "models": {},
+            "controllers": {}
+        },
+        "handler": {}
+    },
+    "cache": {
+        "keep": {},
+        "tad": {}
+    },
+    "api": {},
+    "json": {},
+    "modules": {
+        "commands": {},
+        "events": {}
+    },
+    "pages": {},
+    "utilities": {}
+}

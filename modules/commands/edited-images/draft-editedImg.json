@@ -1,0 +1,61 @@
+[
+    {
+        "id": "$cmd-tweet",
+        "type": "command",
+        "name": "tweet",
+        "description": "Generate a fake Twitter's tweet with thousands of shares and likes.",
+        "usage": "<text>",
+        "author": "Hadestia",
+        "permission": 0,
+        "version": "1.0.1",
+        "cooldown": 60,
+        "category": "edited-images",
+        "script": "editImg-tweet.js",
+        "requiredArgument": 1,
+        "disabled": false,
+        "dependencies": {
+            "fs-extra": "",
+            "canvas": "",
+            "axios": "",
+            "jimp": "0.22.7"
+        }
+    },
+    {
+        "id": "$cmd-remini",
+        "type": "command",
+        "name": "remini",
+        "description": "Enhance a photo from provided link or by replying on a target picture.",
+        "usage": "<photo-link/@reply>",
+        "author": "API by Hazeyy",
+        "permission": 0,
+        "version": "1.0.1",
+        "cooldown": 60,
+        "category": "edited-images",
+        "script": "editImg-remini.js",
+        "requiredArgument": 0,
+        "disabled": false,
+        "dependencies": {
+            "fs-extra": "",
+            "axios": ""
+        }
+    },
+    {
+        "id": "$cmd-spotify",
+        "type": "command",
+        "name": "spotify",
+        "description": "Generate a fake spotify music player given by a title and an artist.\n\nTake note that characters are limited to 20.\n\n𝗘𝘅𝗮𝗺𝗽𝗹𝗲:\n/{cmd-name} I Miss You | Yanyan",
+        "usage": "<title> | <artist>",
+        "author": "Hadestia",
+        "permission": 0,
+        "version": "1.0.1",
+        "cooldown": 60,
+        "category": "edited-images",
+        "script": "editImg-spotify.js",
+        "requiredArgument": 3,
+        "disabled": false,
+        "dependencies": {
+            "fs-extra": "",
+            "path": ""
+        }
+    }
+]

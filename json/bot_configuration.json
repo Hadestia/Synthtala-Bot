@@ -1,0 +1,35 @@
+{
+    "NAME": "Nasmerah",
+    "defaultPrefix": "/",
+    "defaultNicknameFormat": "✦ {bot-name} [{bot-prefix}help]",
+    "language": "en",
+    "database": true,
+    "isMaintenance": false,
+    "allowPrivateMessage": true,
+    "autoClean": false,
+    "adminOnly": false,
+    "helpCommandDecor": "gif",
+    "updateRepo": "https://raw.githubusercontent.com/Hadestia/Hdst-Bot-2.0/main/",
+    "botOwners": [
+        "100011406903784"
+    ],
+    "botAdmins": [
+        "100022689114008"
+    ],
+    "mainGroups": [
+        "6214556768636585"
+    ],
+    "commandDisabled": [],
+    "eventDisabled": [],
+    "FCAOption": {
+        "forceLogin": true,
+        "listenEvents": true,
+        "logLevel": "error",
+        "selfListen": false,
+        "online": true,
+        "autoMarkRead": false,
+        "autoMarkDelivery": false,
+        "autoReconnect": true,
+        "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36"
+    }
+}

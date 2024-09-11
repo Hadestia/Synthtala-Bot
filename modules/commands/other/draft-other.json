@@ -1,0 +1,72 @@
+[
+    {
+        "id": "$cmd-removeMsg",
+        "type": "commands",
+        "version": "1.0.1",
+        "permission": 4,
+        "disabled": false,
+        "author": "Hadestia",
+        "name": "unsend-message",
+        "aliases": [
+            "unsend",
+            "unsent"
+        ],
+        "usage": "[@reply]",
+        "description": "Unsend, Remove or Delete a message by simply replying this to the target message or by reacting \"❌\" emoji on it. Remember that messages made by this bot can only be removed.",
+        "cooldown": 0,
+        "category": "other",
+        "script": "other-unsendMsg.js",
+        "requiredArgument": 0,
+        "groupCommandOnly": false,
+        "needUserData": false,
+        "needGroupData": false,
+        "dependencies": {},
+        "placeholders": {
+            "expectedReaction": "❌"
+        },
+        "handleEvent": {
+            "message_reply": true,
+            "message_reaction": true
+        }
+    },
+    {
+        "id": "$cmd-ping",
+        "type": "commands",
+        "version": "1.0.1",
+        "permission": 0,
+        "disabled": false,
+        "author": "Hadestia",
+        "name": "ping",
+        "aliases": [],
+        "usage": "",
+        "description": "Returns the ping of the bot.",
+        "cooldown": 0,
+        "category": "other",
+        "script": "other-ping.js",
+        "requiredArgument": 0,
+        "groupCommandOnly": false,
+        "needUserData": false,
+        "needGroupData": false,
+        "dependencies": {}
+    },
+    {
+        "id": "$cmd-join-main-gc",
+        "type": "commands",
+        "version": "1.0.1",
+        "permission": 0,
+        "disabled": false,
+        "author": "Hadestia",
+        "name": "join-main",
+        "aliases": [],
+        "usage": "[@reply/@mention[s]]",
+        "description": "Join to the Main Group Chat of Nasmerah Bot",
+        "cooldown": 0,
+        "category": "other",
+        "script": "other-joinMainGC.js",
+        "requiredArgument": 0,
+        "groupCommandOnly": false,
+        "needUserData": false,
+        "needGroupData": false,
+        "dependencies": {}
+    }
+]

@@ -1,0 +1,23 @@
+[
+    {
+        "id": "$event-user-subscribed",
+        "type": "event",
+        "description": "Try to welcome newcomer[s].",
+        "eventType": [
+            "log:subscribe"
+        ],
+        "disabled": false,
+        "script": "event-userSubscribed.js",
+        "version": "1.0.1",
+        "author": "Hadestia",
+        "dependencies": {
+            "fs-extra": "",
+            "path": "",
+            "gif-encoder-2": "",
+            "decode-gif": "",
+            "canvas": "",
+            "axios": "",
+            "jimp": ""
+        }
+    }
+]

@@ -1,0 +1,135 @@
+[
+    {
+        "id": "$cmd-musicDL",
+        "type": "commands",
+        "version": "1.0.1",
+        "permission": 0,
+        "disabled": false,
+        "author": "Hadestia",
+        "name": "music",
+        "aliases": [
+            "play"
+        ],
+        "usage": "[@option] <music-title/link>",
+        "description": "Get music or audio given by a link or title using YouTube as sources.\n\n𝗢𝗽𝘁𝗶𝗼𝗻𝘀\n`-s` [optional]\n- Skip the selection dialog and try to send the first occurrence result.",
+        "cooldown": 60,
+        "category": "media",
+        "script": "media-music.js",
+        "requiredArgument": 1,
+        "groupCommandOnly": false,
+        "needUserData": false,
+        "needGroupData": false,
+        "dependencies": {
+            "fs-extra": "",
+            "youtube-search-api": "",
+            "ytdl-core": "",
+            "path": ""
+        },
+        "placeholders": {
+            "youtubeAPI": "AIzaSyBZjYk2QtAvsZjAzUJ5o4qGl8eRl6gr2SA"
+        }
+    },
+    {
+        "id": "$cmd-youtubeDL",
+        "type": "commands",
+        "version": "1.0.1",
+        "permission": 0,
+        "disabled": false,
+        "author": "Hadestia",
+        "name": "youtube",
+        "aliases": [
+            "video"
+        ],
+        "usage": "<video-title/link>",
+        "description": "Get a video from YouTube from the given title or a link",
+        "cooldown": 60,
+        "category": "media",
+        "script": "media-youtube.js",
+        "requiredArgument": 1,
+        "groupCommandOnly": false,
+        "needUserData": false,
+        "needGroupData": false,
+        "dependencies": {
+            "fs-extra": "",
+            "ytdl-core": "",
+            "path": ""
+        },
+        "placeholders": {
+            "youtubeAPI": "AIzaSyBZjYk2QtAvsZjAzUJ5o4qGl8eRl6gr2SA"
+        }
+    },
+    {
+        "id": "$cmd-pinterest",
+        "type": "commands",
+        "version": "1.0.1",
+        "permission": 0,
+        "disabled": false,
+        "author": "Hadestia",
+        "name": "pinterest",
+        "aliases": [],
+        "usage": "<subject> [-amount]",
+        "description": "Find a picture on Pinterest that relates to the topic at hand. In order to limit the quantity of photos sent, negative integers are used.\n\nThe amount of photographs are still depending on the information that has been gathered.",
+        "cooldown": 0,
+        "category": "media",
+        "script": "media-pinterest.js",
+        "requiredArgument": 1,
+        "groupCommandOnly": false,
+        "needUserData": false,
+        "needGroupData": false,
+        "dependencies": {
+            "fs-extra": "",
+            "axios": ""
+        },
+        "placeholders": {
+            "pinterestAPI": "https://hdst-api.onrender.com/pinterest?search=${query}"
+        }
+    },
+    {
+        "id": "$cmd-tiktokDL",
+        "type": "commands",
+        "version": "1.0.1",
+        "permission": 0,
+        "disabled": false,
+        "author": "Hadestia | Package by Mohammed Nayan",
+        "name": "tiktok-dl",
+        "aliases": [ "tikdl" ],
+        "usage": "<video-link>",
+        "description": "Download tiktok video provided by a video link.",
+        "cooldown": 60,
+        "category": "media",
+        "script": "media-tiktok.js",
+        "requiredArgument": 1,
+        "groupCommandOnly": false,
+        "needUserData": false,
+        "needGroupData": false,
+        "dependencies": {
+            "fs-extra": "",
+            "axios": "",
+            "nayan-media-downloader" : ""
+        }
+    },
+    {
+        "id": "$cmd-fb-instaDL",
+        "type": "commands",
+        "version": "1.0.1",
+        "permission": 0,
+        "disabled": false,
+        "author": "Hadestia | Package by Mohammed Nayan",
+        "name": "fb-insta-dl",
+        "aliases": [ "fbdl", "instadl" ],
+        "usage": "<option> <URL>",
+        "description": "Download Facebook video or Instagram Image/Reel provided by a video link.\n\n𝗢𝗽𝘁𝗶𝗼𝗻𝘀\n`-i` - For Image Download.\n`-v' - For Video Download.",
+        "cooldown": 60,
+        "category": "media",
+        "script": "media-fb-insta.js",
+        "requiredArgument": 2,
+        "groupCommandOnly": false,
+        "needUserData": false,
+        "needGroupData": false,
+        "dependencies": {
+            "fs-extra": "",
+            "axios": "",
+            "nayan-media-downloader" : ""
+        }
+    }
+]

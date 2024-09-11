@@ -1,0 +1,53 @@
+{
+    "group_db": {
+        "threadInfo": {
+            "threadName": "@",
+            "threadImage": "dummyURL",
+            "nicknames": {},
+            "adminIDs": []
+        },
+        "inventory": {},
+        "economy": {},
+        "settings": {
+            "bot-prefix": "/",
+            "allow-anti-out": false,
+            "allow-auto-response": true,
+            "allow-auto-resend": false,
+            "allow-anti-join": false,
+            "allow-chat-exp": true,
+            "allow-nsfw": false,
+            "allow-anti-change": false
+        },
+        "data": {
+            "bannedCommands": [],
+            "bannedUsers": []
+        },
+        "afk": {},
+        "banned": false
+    },
+    "user_db": {
+        "name": "@",
+        "experience": 0,
+        "banned": false,
+        "data": {}
+    },
+    "bans_db": {
+        "ID": 0,
+        "name": "@",
+        "data": {
+            "isGroup": false,
+            "reason": "@",
+            "dateIssued": 0
+        }
+    },
+    "groupUserEconomy_db": {
+        "money": 0,
+        "bank": 0
+    },
+    "groupUserInventory_db": {
+        "cock": 0,
+        "water": 0,
+        "bread": 0,
+        "tesla": 0
+    }
+}

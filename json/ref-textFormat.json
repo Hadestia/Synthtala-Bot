@@ -1,0 +1,84 @@
+{
+    "bot_reactions": {
+        "success": "🟢",
+        "error": "‼️",
+        "inprogress": "💬",
+        "loading": "⏳",
+        "ok": "✅",
+        "warning": "❗",
+        "question": "❓",
+        "thinking": "💭"
+    },
+    "errors": {
+        "moduleNotFoundLanguage": "Language \"%1%\" cannot be found for module %2%.",
+        "errorMsg": "🔴 %1%",
+        "warningMsg": "🟠 %1%"
+    },
+    "events": {
+        "inactiveGroupNotice": "𝗜𝗻𝗮𝗰𝘁𝗶𝘃𝗲 𝗚𝗿𝗼𝘂𝗽\n───────────────\nThis group seems inactive for %1%.\nI'm sorry but i need to leave this thread bye!",
+        "groupBannedFromBot": "🔴 Your group was restricted to use this bot.\n\n ● since: %1%\n ● reason: %2%",
+        "userBannedFromBot": "🔴 You are restricted to use this bot.\n\n ● since: %1%\n ● reason: %2%",
+        "botAddedToGroupIntro": "Hello there! My name is %1%, a friendly messenger Bot. I'm here to offer help and information on a wide range of subjects. This is my prefix: '%2%'. \n\nYou can use various commands to get helpful insights or ask questions. I'm always here to assist. Thank you for adding me. Type `%2%help` or `%2%help usage` to start."
+    },
+    "formats": {
+        "successMsg": "🟢 %1%",
+        "getIdMentions": "%1%\n❯ %2%",
+        "headerNContentThinFormat": "%1%\n───────────────\n%2%",
+        "headerNContentBoldFormat": "%1%\n━━━━━━━━━━━━━━━\n%2%",
+        "getIdMentionsFormat": "● 𝗨𝘀𝗲𝗿 𝗜𝗗'𝘀\n───────────────\n%1%",
+        "searchItemFormat": "%1% ● %2%",
+        "searchResultFormat": "𝗦𝗲𝗮𝗿𝗰𝗵 𝗥𝗲𝘀𝘂𝗹𝘁\n───────────────\n%1%\n\n● reply to this message with the number that corresponds to the item.",
+        "starBulletResult": "✦ %1%",
+        "bulletResult": "● %1%",
+        "greaterthanResult": "❱ %1%",
+        "botInfoFormat": "𝗕𝗼𝘁 𝗶𝗻𝗳𝗼𝗿𝗺𝗮𝘁𝗶𝗼𝗻\n━━━━━━━━━━━━━━━\n\n● prefix: %1%\n● name: %2%\n● id: %3%\n\n● users: %4%\n● groups: %5%\n● runtime: %6%\n\n● events: %7%\n● commands: %8%\n\n● memory: %9%\n● CPU: %10%\n● N-CPU: %11%",
+        "userInfoFormat": "𝗨𝘀𝗲𝗿 𝗶𝗻𝗳𝗼𝗿𝗺𝗮𝘁𝗶𝗼𝗻\n━━━━━━━━━━━━━━━\n\n● name: %1%\n● username: %2%\n● relationship status: %3%\n\n● gender: %4%\n● birthday: %5%\n● followers: %6%\n● address: %7%\n● hometown: %8%\n\n● uid: %9%\n● url: facebook.com/%10%",
+        "userInfoSimpleFormat": "𝗨𝘀𝗲𝗿 𝗶𝗻𝗳𝗼𝗿𝗺𝗮𝘁𝗶𝗼𝗻\n━━━━━━━━━━━━━━━\n\n● name: %1%\n● username: %2%\n● gender: %3%\n\n● uid: %4%\n● url: facebook.com/%5%",
+        "tiktokDlVideoInfoFormat": "%1% (%2%)\n───────────────\n%3%\n\n● views: %4%\n● shares: %5%"
+    },
+    "system": {
+        "startUpNotif": "𝗕𝗼𝘁 𝗵𝗮𝘀 𝗯𝗲𝗲𝗻 𝗮𝗰𝘁𝗶𝘃𝗮𝘁𝗲𝗱\n‎───────────────\n‎%1%",
+        "underMaintenance": "🔧 Sorry for the inconveniences we're currently under maintenance, Kindly wait and we're get back with you soon!",
+        "botPoked": "Do you need something from me?",
+        "offPrivateMessage": "🙁 I am programmed to prioritize public discussions and interactions. If you have any questions or require assistance, please feel free to engage with me in the public chat. The administration has restricted my ability to respond to direct messages.",
+        "botNicknameSetup": "%1% ● %2%"
+    },
+    "commands": {
+        "cmdGroupCmdOnly": "✖ This command is only accessible to group chat.",
+        "cmdPermissionDeclined": "✖ This command can only be use by the %1%.",
+        "cmdInvalidSyntax": "✖ Invalid use of command.\n\n● usage:\n    %1%",
+        "cmdInvalidReplySyntax": "✖ Invalid reply.\n\n● usage:\n    %1%",
+        "groupBannedCmd": "✖ This group was restricted to use '%1%' command.",
+        "userBannedCmd": "✖ You are restricted to use '%1%' command.",
+        "bannedGroupUsedCmd": "✖ Your group was banned to use this service.\n\n✱ issued: %1%\n✱ reason: %2%",
+        "bannedUserUsedCmd": "✖ You are banned to use this service.\n\n✱ issued: %1%\n✱ reason: %2%",
+        "cmdNsfwNotAllowed": "𝗡𝗦𝗙𝗪\n✖ This command may contain explicit content which is not suitable for minor. If you think this might be wrong, kindly reach out to your group administrator for support.",
+        "cmdUserInCooldown": "✖ You cannot use this command for %1%."
+    },
+    "command_help": {
+        "cmdListCmd": "● %1%%2%",
+        "cmdListCatCmd": "● %1%\n - %2%\n𝚊𝚕𝚒𝚊𝚜𝚎𝚜: %3%",
+        "cmdListCategory": "%1%✦%2%\n%3%",
+        "cmdListCategoryFormat": "𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗖𝗮𝘁𝗲𝗴𝗼𝗿𝘆 𝗜𝗻𝗱𝗲𝘅\n────────────────────\n\n%1%\n\n● 𝗚𝘂𝗶𝗱𝗲\n- View all available commands:\n`/help all`\n- View usage information:\n`/help usage`\n- View category's commands:\n`/help <category-name>`\n- View command information:\n`/help <command-name>`",
+        "cmdAllListFormat": "𝗔𝗹𝗹 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀  (𝙥𝙖𝙜𝙚 %1%/%2%)\n────────────────────\n%3%\n────────────────────\nUse `%4%help <command-name>`\nto find out more about it.\n`%4%help <page-number>` to view other pages.",
+        "cmdCatCommandsFormat": "%1% 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀\n━───────────────────\n%2%\n────────────────────\nUse `%3%help <command-name>` to find out more about it.",
+        "cmdInfoDefault": "%1%\n───────────────\n%2%\n\n𝘀𝘁𝗮𝘁𝘂𝘀:\n %3%\n\n𝘂𝘀𝗮𝗴𝗲:\n`%4%`\n\n𝗰𝗮𝘁𝗲𝗴𝗼𝗿𝘆:\n%5%\n\n𝗰𝗼𝗼𝗹𝗱𝗼𝘄𝗻:\n%6%\n\n𝗽𝗲𝗿𝗺𝗶𝘀𝘀𝗶𝗼𝗻:\n%7%\n\n𝗮𝗹𝗶𝗮𝘀𝗲𝘀:\n%8%",
+        "cmdInfoWithReplyUsage": "%1%\n───────────────\n%2%\n\n𝘀𝘁𝗮𝘁𝘂𝘀:\n %3%\n\n𝘂𝘀𝗮𝗴𝗲:\n %4%\n\n𝗿𝗲𝗽𝗹𝘆 𝘂𝘀𝗮𝗴𝗲:\n %5%\n\n𝗰𝗮𝘁𝗲𝗴𝗼𝗿𝘆:\n %6%\n\n𝗰𝗼𝗼𝗹𝗱𝗼𝘄𝗻:\n%7%\n\n𝗽𝗲𝗿𝗺𝗶𝘀𝘀𝗶𝗼𝗻:\n%8%\n\n𝗮𝗹𝗶𝗮𝘀𝗲𝘀:\n %9%",
+        "commandHelpUsage": "𝗖𝗼𝗺𝗺𝗮𝗻𝗱 𝗣𝗿𝗲𝗳𝗶𝘅\n───────────────\ndefault: \"%1%\" or \"@mention\"\nexample: \"%1%help\" or \"@%2% help\"\n\n𝗨𝘀𝗮𝗴𝗲 𝗦𝘆𝗻𝘁𝗮𝘅\n───────────────\n`[ ]` - optional parameter\n`<>` - required parameter\n`< thing1 | thing2 >` - select one of these options."
+    },
+    "command_permissions": {
+        "cmdPerm-1": "Bot owner[s].",
+        "cmdPerm0": "Anyone",
+        "cmdPerm1": "Group administrator[s].",
+        "cmdPerm2": "Bot administrator[s].",
+        "cmdPerm3": "Bot administrator[s] & Bot owner[s].",
+        "cmdPerm4": "Bot owner[s], Bot administrator[s] & Group administrator[s]"
+    },
+    "miscs": {
+        "noDataTxtFont": "𝘯𝘰 𝘥𝘢𝘵𝘢",
+        "horizontalLineThin": "────────────────────",
+        "horizontalLineBold": "━━━━━━━━━━━━━━━━━━━━",
+        "horizontalLineThinShort": "───────────────",
+        "horizontalLineBoldShort": "━━━━━━━━━━━━━━━"
+    }
+}

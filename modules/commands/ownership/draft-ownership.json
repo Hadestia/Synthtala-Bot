@@ -1,0 +1,67 @@
+[
+    {
+        "id": "$cmd-bot",
+        "type": "commands",
+        "version": "1.0.1",
+        "permission": -1,
+        "disabled": false,
+        "author": "Hadestia",
+        "name": "bot",
+        "aliases": [],
+        "usage": "<@option> [other-params]",
+        "description": "Perform specific task provided by an 'option'.\n\n𝗢𝗽𝘁𝗶𝗼𝗻𝘀:\n`-list`\n- get list of active sessions in the system.\n\n`-help-decor <type>`\n- toggle help command decorations by specified type. Type must be a 'gif', 'img' or 'none' for no decorations at all.",
+        "cooldown": 0,
+        "category": "ownership",
+        "script": "ownership-bot.js",
+        "requiredArgument": 1,
+        "groupCommandOnly": false,
+        "needUserData": false,
+        "needGroupData": false,
+        "dependencies": {
+            "axios": ""
+        }
+    },
+    {
+        "id": "$cmd-exportdb",
+        "type": "commands",
+        "version": "1.0.1",
+        "permission": -1,
+        "disabled": false,
+        "author": "Hadestia",
+        "name": "export",
+        "aliases": [],
+        "usage": "<@type> <id/*>",
+        "description": "Export database data by an ID.\n\n𝗢𝗽𝘁𝗶𝗼𝗻𝘀: (either)\n`user, group, ban, command`",
+        "cooldown": 0,
+        "category": "ownership",
+        "script": "ownership-exportDB.js",
+        "requiredArgument": 2,
+        "groupCommandOnly": false,
+        "needUserData": false,
+        "needGroupData": false,
+        "dependencies": {
+            "fs-extra": "",
+            "path": ""
+        }
+    },
+    {
+        "id": "$cmd-notify",
+        "type": "commands",
+        "version": "1.0.1",
+        "permission": 3,
+        "disabled": false,
+        "author": "Hadestia",
+        "name": "notify",
+        "aliases": [],
+        "usage": "<@options> | <message>",
+        "description": "Send a notification to all groups or given by thread ID. Be advised that '|' is included between options and the content message.\n\n𝗢𝗽𝘁𝗶𝗼𝗻𝘀:\n`-all`\n- Sent to all group chats.\n\n`@thread-id[s]`\n- Sent to a given thread ID. use space for multiple IDs.",
+        "cooldown": 0,
+        "category": "ownership",
+        "script": "ownership-notify.js",
+        "requiredArgument": 3,
+        "groupCommandOnly": false,
+        "needUserData": false,
+        "needGroupData": false,
+        "dependencies": {}
+    }
+]

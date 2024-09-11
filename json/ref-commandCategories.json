@@ -1,0 +1,84 @@
+{
+    "administration": {
+        "icon": "🔐",
+        "description": "Group commands and group administrations."
+    },
+    "artificial-intelligence": {
+        "icon": "🤖",
+        "description": "Commands with the use of artificial intelligence for getting answers or reliable code in programming."
+    },
+    "character-ai": {
+        "icon": "🔮",
+        "description": "Interact with AI characters depending on their personalities.",
+        "hide": true
+    },
+    "information": {
+        "icon": "📔",
+        "description": "Commands for retrieving information about particular subject."
+    },
+    "ownership": {
+        "icon": "👤",
+        "description": "Commands for my owner."
+    },
+    "random": {
+        "icon": "🎲",
+        "description": "Random, fun and unexpected commands.",
+        "hide": true
+    },
+    "education": {
+        "icon": "📖",
+        "description": "Useful commands for education.",
+        "hide": true
+    },
+    "system": {
+        "icon": "⚙️",
+        "description": "Commands for the system.",
+        "hide": true
+    },
+    "tools": {
+        "icon": "🛠️",
+        "description": "Useful commands for fetching and other functions."
+    },
+    "media": {
+        "icon": "🎞️",
+        "description": "Commands related to media. e.g Music."
+    },
+    "edited-images": {
+        "icon": "🎭",
+        "description": "Edited images and memes related commands are dumped here."
+    },
+    "games": {
+        "icon": "🎮",
+        "description": "Free, Fun and Enjoying game commands.",
+        "hide": true
+    },
+    "gambling": {
+        "icon": "🎰",
+        "description": "Like a rollercoaster ride for your money, with the added thrill of potentially losing it all and having to sell your pet rock collection to make rent.",
+        "hide": true
+    },
+    "economy": {
+        "icon": "🪙",
+        "description": "Commands that was fun and economic.",
+        "hide": true
+    },
+    "other": {
+        "icon": "🗑️",
+        "description": "Commands which do not fit in either of the above categories."
+    },
+    "event-listener": {
+        "icon": "‼️",
+        "description": "---",
+        "hide": true
+    },
+    "hidden": {
+        "icon": "‼️",
+        "description": "Well I don't know it's hidden.",
+        "hide": true
+    },
+    "nsfw": {
+        "icon": "😎",
+        "description": "Better not to talk about these...",
+        "hide": true
+    }
+}

@@ -1,0 +1,26 @@
+[
+    {
+        "id": "$cmd-askBlackboxAI",
+        "type": "commands",
+        "version": "1.0.1",
+        "permission": 0,
+        "disabled": false,
+        "author": "Hadestia",
+        "name": "blackbox-ai",
+        "aliases": [
+            "ai"
+        ],
+        "usage": "<prompt>",
+        "description": "An AI code commentator buddy powered by BlackboxAI",
+        "cooldown": 60,
+        "category": "artificial-intelligence",
+        "script": "ai-askBlackboxAI.js",
+        "requiredArgument": 2,
+        "groupCommandOnly": false,
+        "needUserData": false,
+        "needGroupData": false,
+        "dependencies": {
+            "axios": ""
+        }
+    }
+]

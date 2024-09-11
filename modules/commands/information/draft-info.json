@@ -1,0 +1,79 @@
+[
+    {
+        "id": "$cmd-uid",
+        "type": "commands",
+        "version": "1.0.2",
+        "permission": 0,
+        "disabled": false,
+        "author": "Hadestia",
+        "name": "get-id",
+        "aliases": [
+            "uid",
+            "tid"
+        ],
+        "usage": "[@reply/@mention/name/link]",
+        "description": "Retrieve Facebook IDs for your account, friends (via reply/mention/name), or current group, with functionality varying based on the command alias used. (returns your current user ID by default)\n\n𝗨𝘀𝗲:\n`uid` - for retrieving user ID\n`tid` - for retrieving group ID",
+        "cooldown": 0,
+        "category": "information",
+        "script": "info-getID.js",
+        "requiredArgument": 0,
+        "groupCommandOnly": false,
+        "needUserData": false,
+        "needGroupData": false,
+        "dependencies": {}
+    },
+    {
+        "id": "$cmd-user-info",
+        "type": "commands",
+        "version": "1.0.1",
+        "permission": -1,
+        "disabled": false,
+        "author": "Hadestia",
+        "name": "get-user-info",
+        "aliases": [
+            "user-info",
+            "u-info"
+        ],
+        "usage": "[@reply/@mention/fb-link/username/user-id]",
+        "description": "Get a brief information of a user by replying, mentioning, putting link or username of a target person.",
+        "cooldown": 60,
+        "category": "information",
+        "script": "info-getUserInfo.js",
+        "requiredArgument": 0,
+        "groupCommandOnly": false,
+        "needUserData": false,
+        "needGroupData": false,
+        "dependencies": {
+            "path": "",
+            "get-fbid": "",
+            "fs-extra": ""
+        }
+    },
+    {
+        "id": "$cmd-bot-info",
+        "type": "commands",
+        "version": "1.0.1",
+        "permission": 0,
+        "disabled": false,
+        "author": "Hadestia",
+        "name": "get-bot-info",
+        "aliases": [
+            "bot-info",
+            "b-info",
+            "uptime"
+        ],
+        "usage": "",
+        "description": "Get information from this bot.",
+        "cooldown": 0,
+        "category": "information",
+        "script": "info-getBotInfo.js",
+        "requiredArgument": 0,
+        "groupCommandOnly": false,
+        "needUserData": false,
+        "needGroupData": false,
+        "dependencies": {
+            "path": "",
+            "fs-extra": ""
+        }
+    }
+]
