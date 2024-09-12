@@ -1,13 +1,11 @@
 const Path = require('path');
 const Filesystem = require('fs-extra');
 
-const appStateDirectory = Path.resolve(`${__dirname}/../@nasmerah/appstates`);
-
 function error(msg) {
 	return `Invalid AppState: ${msg}`;
 }
 
-module.exports.parse = function ( stringifyAppstate, fromFolder, fromSecrets ) {
+module.exports.parse = function ( stringifyAppstate, fromFolder, CLIENT ) {
 	
 	const promise = new Promise((resolve, reject) => {
 		
@@ -40,9 +38,9 @@ module.exports.parse = function ( stringifyAppstate, fromFolder, fromSecrets ) {
 			return reject(error('not adhered of required structure!!'));
 		}
 	
-		const appStateFiles = Filesystem.readdirSync(appStateDirectory);
+		const appStateFiles = Filesystem.readdirSync(CLIENT.APPSTATE_PATH);
 		const existingAppStateValues = appStateFiles.flatMap((filename) => {
-			const filePath = Path.join(appStateDirectory, filename);
+			const filePath = Path.join(CLIENT.APPSTATE_PATH, filename);
 			try {
 				const fileContent = Filesystem.readFileSync(filePath, 'utf8');
 				const fileAppState = JSON.parse(fileContent);
@@ -75,11 +73,11 @@ module.exports.parse = function ( stringifyAppstate, fromFolder, fromSecrets ) {
 	
 }
 
-module.exports.create_override = function ( stringifyAppstate ) {
+module.exports.create_override = function ( stringifyAppstate, CLIENT) {
 	
 	const appStateData = JSON.parse(stringifyAppstate.replace(/\\/g, ''));
 	const id = (appStateData.find(cookie => cookie.key === 'c_user')).value;
-	const path = Path.join(appStateDirectory, `${id}.json`);
+	const path = Path.join(CLIENT.APPSTATE_PATH, `${id}.json`);
 	
 	Filesystem.writeFileSync(path, JSON.stringify(appStateData, null, 4), 'utf8');
 	

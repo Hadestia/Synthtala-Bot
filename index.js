@@ -175,7 +175,7 @@ async function newSession ( appstate, appStatePath, fileName, restart) {
 	
 	// Parse AppState
 	const util_appState = require('./utilities/appStateUtil');
-	await util_appState.parse(appstate, true).then(async({ botID, botAppState }) => {
+	await util_appState.parse(appstate, true, CLIENT).then(async({ botID, botAppState }) => {
 		
 		if (CLIENT.AGENTS[botID]) {
 			reject(`Bot (${botID}) is currently active, unable to start`);
