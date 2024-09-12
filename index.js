@@ -76,7 +76,7 @@ const start_server = async function () {
 		await fileTree.makeFileTree(ref_fileTree, __dirname);
 	} catch (_err) {
 		throw _err;
-	}
+	} 
 	
 	const App = express();
 	App.use(cors());
@@ -192,7 +192,7 @@ async function newSession ( appstate, appStatePath, fileName, restart) {
 		
 		// Add initial contents
 		const childData = {
-			id: data.id,
+			id: botID,
 			status: 'starting',
 			link: `https://www.facebook.com/${data.id}`,
 			path: appStatePath,
