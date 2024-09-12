@@ -200,7 +200,7 @@ async function newSession ( appstate, appStatePath, fileName, restart) {
 			process: child,
 		};
 		
-		CLIENT.AGENTS[data.id] = childData;
+		CLIENT.AGENTS[botID] = childData;
 		process.env.IS_SERVICE_RESTARTING = 'false';
 		
 		child.on('close', function (code) {
