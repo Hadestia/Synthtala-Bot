@@ -75,7 +75,8 @@ const start_server = async function () {
 		const ref_fileTree = Filesystem.readJsonSync('./json/ref-FileTree.json'); 
 		await fileTree.makeFileTree(ref_fileTree, __dirname);
 	} catch (_err) {
-		throw _err;
+		console.error(_err);
+		process.exit();
 	} 
 	
 	const App = express();
@@ -97,7 +98,7 @@ const start_server = async function () {
 	
 	App.set('trust proxy', 1);
 	App.set('json spaces', 4);
-	App.set('port', 1000);
+	App.set('port', 3000);
 
 	// Get Routes
 	await routes({ express, CLIENT, Logger }).then((routers) => {
@@ -119,7 +120,7 @@ const start_server = async function () {
 		res.sendFile(Path.join(CLIENT.CACHE_PATH, 'Log.txt'));
 	});
 	
-	Api.get('/restart-service', async function (req, res) {
+	App.get('/restart-service', async function (req, res) {
 	
 		if (!req.query.authKey) {
 			return res.status(400).json({ error: 'Missing authentication key'});
