@@ -12,13 +12,13 @@ const Path = require('path');
 const Logger = require('./utilities/logger.js');
 
 const logPath = Path.join(__dirname, 'cache', 'Log.txt');
-const ref_fileTree = require(Path.join(__dirname, 'json', 'ref-FileTree.json')); 
 
 async function startServer() {
 	
 	// CHECK & MAKE FILE TREEs
 	try {
-		const reference = require(Path.join(__dirname, 'json', 'ref-FileTree.json')); 
+		const fileTree = require('./utilities/fileTree.js');
+		const ref_fileTree = require(Path.join(__dirname, 'json', 'ref-FileTree.json')); 
 		await fileTree.makeFileTree(ref_fileTree, __dirname);
 	} catch (_err) {
 		return console.error(_err);

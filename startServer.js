@@ -19,8 +19,6 @@ const helmet = require('helmet');
 const getIP = require('ipware')().get_ip;
 const rate_limiter = require('express-rate-limit');
 
-const fileTree = require('./utilities/fileTree.js');
-
 // ────────────────────────────── # INIT CLIENT ──────────────────────────────
 const CLIENT = {
 	
@@ -55,10 +53,7 @@ const CLIENT = {
 const start_server = async function () {
 	
 	try {
-		const ref_fileTree = require(Path.join(__dirname, 'json', 'ref-FileTree.json'));
 		const cache = Filesystem.readdirSync(CLIENT.CACHE_PATH).filter((file) => ['json', 'png', 'mp4', 'mp3', 'jpg', 'txt'].includes((file.split('.')).pop()));
-		// Check file tree & delete cache
-		await fileTree.makeFileTree(ref_fileTree, __dirname);
 		cache.forEach((file) => {
 			try {
 				Filesystem.unlinkSync(Path.join(CLIENT.CACHE_PATH, file));
