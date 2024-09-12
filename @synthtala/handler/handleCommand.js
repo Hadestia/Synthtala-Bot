@@ -269,7 +269,7 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 
 async function showHelpContents ({ event, arguments, prefix_used, API, BOT_INFO, CLIENT, MODULES, Utils, Users, Message }) {
 	
-	const cmdCategoriesReference = Filesystem.readJsonSync(`${CLIENT.ROOT_PATH}/json/ref-commandCategories.json`);
+	const cmdCategoriesReference = CLIENT.COMMAND_CATEGORY_REF;
 	
 	let banners = [], chosenBannerPath;
 	const responseDecor = (['img', 'gif'].includes(CLIENT.CONFIG.helpCommandDecor));

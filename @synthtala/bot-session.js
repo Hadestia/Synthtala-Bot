@@ -1,31 +1,27 @@
-const Moment = require('moment-timezone');
-const Filesystem = require('fs-extra');
 const Path = require('path');
-
+const Filesystem = require('fs-extra');
+const Moment = require('moment-timezone');
 const BotLogin = require('../@fb-chat-api');
 const Logger = require(Path.resolve(`${__dirname}/../utilities/logger.js`));
 
-let CLIENT, APPSTATE, APPSTATE_PATH, APPSTATE_FILENAME, MODULES;
+let CLIENT,
+	MODULES,
+	APPSTATE,
+	APPSTATE_PATH,
+	APPSTATE_FILENAME;
 
-process.on('unhandledRejection', (err) => {
-	console.error(err);
-	//Logger.makeLog(Path.resolve(`${__dirname}/../cache/Log.txt`), err, 'error'));
-});
-process.on('uncaughtException', (err) => {
-	console.error(err);
-	//Logger.makeLog(Path.resolve(`${__dirname}/../cache/Log.txt`), err, 'error'));
-});
-
-/// Event Listener For Receiving Data From Parent
+// ────────────────────────────── # EVENTS: RECEIVE DATA FROM PARENT ──────────────────────────────
 process.on('message', function ( data ) {
+	
 	const msg_signal = data.message;
+	
 	switch (msg_signal) {
-		case 'start':
+		case '-start':
 			start( data );
 			break;
-		case 'update':
-			CLIENT = data.CLIENT;
-			MODULES = data.CLIENT.MODULES;
+		case '-update':
+			CLIENT = (data.CLIENT) ? data.CLIENT : CLIENT;
+			MODULES = (data.CLIENT.MODULES) ? data.CLIENT.MODULES : MODULES;
 			break;
 		default:
 			break;
@@ -157,14 +153,10 @@ function start( input ) {
 			const characterAI = require(Path.join(CLIENT.ROOT_PATH, 'utilities', '/initCharacterAI.js'));
 			const CharacterAI = await characterAI.authenticate(CLIENT.ROOT_PATH, Logger);
 			
-			/// START UP NOTIFY ADMINS
+			/// START UP NOTIFY MAIN GROUP CHATS
 			Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID}(${BOT_INFO.NAME}) » Notifying Administrators.`, 'bot');
 			const notifiedID = {};
-			const prevMessage = {};
 			
-			// const log = await Filesystem.createReadStream(CLIENT.LOG_PATH);
-			
-			/* DEPRECATED SINCE ENCRYPTED MESSENGER UPDATE
 			const time = Moment().tz('Asia/Manila').format('MMMM DD, YYYY • HH:mm');
 			for (const id of [ ...CLIENT.CONFIG.botOwners, ...CLIENT.CONFIG.botAdmins ]) {
 				if (!notifiedID[id]) {

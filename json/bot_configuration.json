@@ -1,15 +1,16 @@
 {
-    "NAME": "Nasmerah",
+    "NAME": "SynthTala",
+    "timezone": "Asia/Manila",
     "defaultPrefix": "/",
     "defaultNicknameFormat": "✦ {bot-name} [{bot-prefix}help]",
-    "language": "en",
     "database": true,
+    "logger": true,
     "isMaintenance": false,
     "allowPrivateMessage": true,
     "autoClean": false,
     "adminOnly": false,
     "helpCommandDecor": "gif",
-    "updateRepo": "https://raw.githubusercontent.com/Hadestia/Hdst-Bot-2.0/main/",
+    "updateRepo": "",
     "botOwners": [
         "100011406903784"
     ],
@@ -29,7 +30,6 @@
         "online": true,
         "autoMarkRead": false,
         "autoMarkDelivery": false,
-        "autoReconnect": true,
         "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36"
     }
 }

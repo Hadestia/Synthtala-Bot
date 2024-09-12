@@ -60,7 +60,7 @@ module.exports = (data, type, color) => {
             break;
             
         default:			        
-            log('Nasmerah', data, color || '#00ffff', '#ffffff');
+            log(config.NAME, data, color || '#00ffff', '#ffffff');
 			break;
 	}
 }
@@ -70,16 +70,16 @@ module.exports = (data, type, color) => {
 
 module.exports.makeLog = async function (fileName, data, logType) {
 	
-	const formattedTime = Moment().tz('Asia/Manila').format('MMMM/DD/YYYY hh:mm A');
+	const formattedTime = Moment().tz(config.timezone).format('MMMM/DD/YYYY hh:mm A');
 	const formatLog = `${config.NAME} | ${formattedTime} \u27E9 ${(typeof data == 'object' && data.stack) ? data.stack : data}`;
 	
 	if (logType) {
 		module.exports(data, logType);
 	}
 	
-	/*try {
-		(Filesystem.existsSync(fileName)) ? Filesystem.appendFile(fileName, `${formatLog}\n`) : Filesystem.writeFileSync(fileName, `${formatLog}\n`);
-	} catch (e) {
-		module.exports(`Unable to export log to ${fileName}`, 'warn');
-	}*/
+	if (config.logger) {
+		try {
+			(Filesystem.existsSync(fileName)) ? Filesystem.appendFile(fileName, `${formatLog}\n`) : Filesystem.writeFileSync(fileName, `${formatLog}\n`);
+		} catch (e) {}
+	}
 }

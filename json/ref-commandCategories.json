@@ -1,11 +1,13 @@
 {
     "administration": {
         "icon": "🔐",
-        "description": "Group commands and group administrations."
+        "description": "Group commands and group administrations.",
+        "hide": false
     },
     "artificial-intelligence": {
         "icon": "🤖",
-        "description": "Commands with the use of artificial intelligence for getting answers or reliable code in programming."
+        "description": "Commands with the use of artificial intelligence for getting answers or reliable code in programming.",
+        "hide": false
     },
     "character-ai": {
         "icon": "🔮",
@@ -14,11 +16,13 @@
     },
     "information": {
         "icon": "📔",
-        "description": "Commands for retrieving information about particular subject."
+        "description": "Commands for retrieving information about particular subject.",
+        "hide": false
     },
     "ownership": {
         "icon": "👤",
-        "description": "Commands for my owner."
+        "description": "Commands for my owner.",
+        "hide": false
     },
     "random": {
         "icon": "🎲",
@@ -37,15 +41,18 @@
     },
     "tools": {
         "icon": "🛠️",
-        "description": "Useful commands for fetching and other functions."
+        "description": "Useful commands for fetching and other functions.",
+        "hide": false
     },
     "media": {
         "icon": "🎞️",
-        "description": "Commands related to media. e.g Music."
+        "description": "Commands related to media. e.g Music.",
+        "hide": false
     },
     "edited-images": {
         "icon": "🎭",
-        "description": "Edited images and memes related commands are dumped here."
+        "description": "Edited images and memes related commands are dumped here.",
+        "hide": false
     },
     "games": {
         "icon": "🎮",
@@ -64,7 +71,8 @@
     },
     "other": {
         "icon": "🗑️",
-        "description": "Commands which do not fit in either of the above categories."
+        "description": "Commands which do not fit in either of the above categories.",
+        "hide": false
     },
     "event-listener": {
         "icon": "‼️",
