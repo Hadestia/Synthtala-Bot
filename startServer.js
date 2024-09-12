@@ -84,7 +84,7 @@ const start_server = async function () {
 	
 	App.set('trust proxy', 1);
 	App.set('json spaces', 4);
-	App.set('port', (process.env.PORT || 1000) + 1);
+	App.set('port', 1001);
 
 	// Get Routes
 	await routes({ express, CLIENT, Logger }).then((routers) => {

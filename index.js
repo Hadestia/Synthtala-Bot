@@ -44,7 +44,7 @@ async function startServer() {
 	
 	App.set('trust proxy', 1);
 	App.set('json spaces', 4);
-	App.set('port', process.env.PORT || 1000);
+	App.set('port', 1000);
 	
 	let childServer;
 	function spawnChildSever() {
