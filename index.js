@@ -70,8 +70,8 @@ const restartService = function () {
 		} catch (err) {
 			reject(err);
 		}
-	}
-});
+	});
+}
 
 const start_server = async function () {
 	
@@ -138,7 +138,7 @@ const start_server = async function () {
 			return res.status(401).json({ error: 'Invalid authentication key' });
 		} else {
 			if (process.env.IS_SERVICE_RESTARTING == 'false') {
-				restartService.then(() => {
+				restartService().then(() => {
 					res.status(200).json({ message: 'Service is now restarting' });
 					process.env.IS_SERVICE_RESTARTING == 'true';
 				}).catch((err) => {
