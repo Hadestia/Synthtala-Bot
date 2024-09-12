@@ -72,7 +72,7 @@ const start_server = async function () {
 	// CHECK & MAKE FILE TREEs
 	try {
 		const fileTree = require('./utilities/fileTree.js');
-		const ref_fileTree = require('./json/ref-fileTree.json'); 
+		const ref_fileTree = Filesystem.readJsonSync('./json/ref-FileTree.json'); 
 		await fileTree.makeFileTree(ref_fileTree, __dirname);
 	} catch (_err) {
 		throw _err;
@@ -194,7 +194,7 @@ async function newSession ( appstate, appStatePath, fileName, restart) {
 		const childData = {
 			id: botID,
 			status: 'starting',
-			link: `https://www.facebook.com/${data.id}`,
+			link: `https://www.facebook.com/${botID}`,
 			path: appStatePath,
 			filename: fileName,
 			process: child,
