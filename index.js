@@ -72,10 +72,10 @@ const start_server = async function () {
 	// CHECK & MAKE FILE TREEs
 	try {
 		const fileTree = require('./utilities/fileTree.js');
-		const ref_fileTree = require(Path.join(__dirname, 'json', 'ref-fileTree.json')); 
+		const ref_fileTree = require('./json/ref-fileTree.json'); 
 		await fileTree.makeFileTree(ref_fileTree, __dirname);
 	} catch (_err) {
-		return console.error(_err);
+		throw _err;
 	}
 	
 	const App = express();
@@ -333,7 +333,7 @@ async function loginAgents() {
 			} catch (e) {};
 		});
 	} catch (_err) {
-		return console.error(_err);
+		console.error(_err);
 	}
 	
 	/// Copy and Make a new Log.txt > Old logs will be sent to main bot on start up

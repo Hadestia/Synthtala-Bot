@@ -171,7 +171,6 @@ function start( input ) {
 					notifiedID[id] = true;
 				}
 			}
-			*/
 			
 			/// PREPARE INITIAL INPUTS
 			const Inputs = { API, CLIENT, MODULES };
