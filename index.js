@@ -57,17 +57,19 @@ process.on('uncaughtException', console.error);
 const time = Moment().tz('Asia/Manila').format('MMMM DD, YYYY');
 Filesystem.writeFileSync(CLIENT.LOG_PATH, `Logs Start Date » ${time} ==================>\n`); /*(Filesystem.existsSync(CLIENT.LOG_PATH)) ? Filesystem.readFileSync(CLIENT.LOG_PATH): Filesystem.writeFileSync(CLIENT.LOG_PATH, `Logs Start Date » ${time} ==================>\n`);*/
 
-const restartService = new Promise (async (resolve, reject) => {
-	try {
-		await Object.keys(CLIENT.AGENTS).forEach((bot_id) => {
-			const session = CLIENT.AGENTS[bot_id].process;
-			session.exit(0);
-			delete CLIENT.AGENTS[bot_id];
-		});
-		loginAgents();
-		resolve();
-	} catch (err) {
-		reject(err);
+const restartService = function () {
+	return new Promise (async (resolve, reject) => {
+		try {
+			await Object.keys(CLIENT.AGENTS).forEach((bot_id) => {
+				const session = CLIENT.AGENTS[bot_id].process;
+				session.exit(0);
+				delete CLIENT.AGENTS[bot_id];
+			});
+			loginAgents();
+			resolve();
+		} catch (err) {
+			reject(err);
+		}
 	}
 });
 
@@ -182,10 +184,6 @@ async function newSession ( appstate, appStatePath, fileName, restart) {
 	const util_appState = require('./utilities/appStateUtil');
 	await util_appState.parse(appstate, true, CLIENT).then(async({ botID, botAppState }) => {
 		
-		if (CLIENT.AGENTS[botID]) {
-			reject(`Bot (${botID}) is currently active, unable to start`);
-		}
-		
 		Logger.makeLog(CLIENT.LOG_PATH, `${(restart) ? 'Restarting' : 'Starting new'} session for ${fileName}`, 'login');
 			
 		let child = ChildProcess.fork(`${CLIENT.ROOT_PATH}/@synthtala/bot-session.js`, null, {
@@ -207,6 +205,16 @@ async function newSession ( appstate, appStatePath, fileName, restart) {
 		
 		CLIENT.AGENTS[botID] = childData;
 		process.env.IS_SERVICE_RESTARTING = 'false';
+		
+		const message = {
+			message: '-start',
+			ID: botID,
+			CLIENT: CLIENT,
+			APPSTATE: botAppState,
+			APPSTATE_FILENAME: fileName,
+			APPSTATE_PATH: appStatePath
+		};
+		await child.send(message);
 		
 		child.on('close', function (code) {
 			Logger.makeLog(CLIENT.LOG_PATH, `Bot-${botID} » Process was exited with code ${code}`, '--');
@@ -265,17 +273,6 @@ async function newSession ( appstate, appStatePath, fileName, restart) {
 				}
 			}
 		});
-		
-		const message = {
-			message: '-start',
-			ID: botID,
-			CLIENT: CLIENT,
-			APPSTATE: botAppState,
-			APPSTATE_FILENAME: fileName,
-			APPSTATE_PATH: appStatePath
-		};
-		await child.send(message);
-		
 	}).catch(reject);
 		
 	return promise;
@@ -352,12 +349,11 @@ async function loginAgents() {
 	}
 	
 	// Login AppState from Secrets
-	if (Credentials.length === 0) {
+	if (Credentials.length == 0) {
 		if (process.env.MAIN_APPSTATE) {
 			await newSession(process.env.MAIN_APPSTATE, '', '<Environment Variable>').then((data) => {}).catch((err) => {
 				Logger.makeLog(CLIENT.LOG_PATH, `Main Appstate » Error While Starting New Session`, 'error');
 				Logger.makeLog(CLIENT.LOG_PATH, err, 'error');
-				console.error(err);
 			});
 		} else {
 			return Logger.makeLog(CLIENT.LOG_PATH, `There's no credentials in the appstate folder for logins. End of the process :/`, 'warn');
@@ -375,12 +371,11 @@ async function loginAgents() {
 
 async function starter() {
 	
+	Logger.makeLog(CLIENT.LOG_PATH, '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', '--');
 	Logger.makeLog(CLIENT.LOG_PATH, `${CLIENT.CONFIG.NAME} »`, '--');
 	process.env.IS_SERVICE_RESTARTING = 'false';
 	
 	await start_server();
-	
-	Logger.makeLog(CLIENT.LOG_PATH, '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', '--');
 	
 	try {
 		const cache = Filesystem.readdirSync(CLIENT.CACHE_PATH).filter((file) => ['json', 'png', 'mp4', 'mp3', 'jpg', 'txt'].includes((file.split('.')).pop()));
@@ -440,7 +435,7 @@ async function starter() {
 		}
 	);
 	
-	loginAgents();
+	await loginAgents();
 }
 
 starter();
