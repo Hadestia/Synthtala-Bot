@@ -158,7 +158,7 @@ function start( input ) {
 			const notifiedID = {};
 			
 			const time = Moment().tz('Asia/Manila').format('MMMM DD, YYYY • HH:mm');
-			for (const id of [ ...CLIENT.CONFIG.botOwners, ...CLIENT.CONFIG.botAdmins ]) {
+			for (const id of CLIENT.CONFIG.mainGroups) {
 				if (!notifiedID[id]) {
 					API.sendMessage(
 						{

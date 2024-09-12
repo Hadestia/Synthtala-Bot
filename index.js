@@ -53,6 +53,10 @@ const CLIENT = {
 process.on('unhandledRejection', console.error);
 process.on('uncaughtException', console.error);
 
+/// Copy and Make a new Log.txt > Old logs will be sent to main bot on start up
+const time = Moment().tz('Asia/Manila').format('MMMM DD, YYYY');
+Filesystem.writeFileSync(CLIENT.LOG_PATH, `Logs Start Date » ${time} ==================>\n`); /*(Filesystem.existsSync(CLIENT.LOG_PATH)) ? Filesystem.readFileSync(CLIENT.LOG_PATH): Filesystem.writeFileSync(CLIENT.LOG_PATH, `Logs Start Date » ${time} ==================>\n`);*/
+
 const restartService = new Promise (async (resolve, reject) => {
 	try {
 		await Object.keys(CLIENT.AGENTS).forEach((bot_id) => {
@@ -98,7 +102,6 @@ const start_server = async function () {
 	
 	App.set('trust proxy', 1);
 	App.set('json spaces', 4);
-	App.set('port', 3000);
 
 	// Get Routes
 	await routes({ express, CLIENT, Logger }).then((routers) => {
@@ -144,7 +147,7 @@ const start_server = async function () {
 		}
 	});
 	
-	await App.listen(App.get('port'), async () => {
+	await App.listen(3009, () => {
 		Logger.makeLog(CLIENT.LOG_PATH, `Server » ${CLIENT.SERVER_LINK}`, '--');
 		Logger.makeLog(CLIENT.LOG_PATH, `Server Status » ONLINE - running on port ${App.get('port')}`, '--');
 		// Upload Pinger to side server
@@ -244,7 +247,7 @@ async function newSession ( appstate, appStatePath, fileName, restart) {
 				case '-logged': {
 					Logger.makeLog(CLIENT.LOG_PATH, `${data.id} Took ${data.process_time}MS To Complete`, 'login');
 					Logger.makeLog(CLIENT.LOG_PATH, '─────────────────────────────────────────────', 'login');
-					const restart_count = (CLIENT.ACTIVE_BOT[data.id] && CLIENT.ACTIVE_BOT[data.id].restart_count) ? CLIENT.ACTIVE_BOT[data.id].restart_count + 1 : 0;
+					const restart_count = (CLIENT.AGENTS[data.id] && CLIENT.AGENTS[data.id].restart_count) ? CLIENT.AGENTS[data.id].restart_count + 1 : 0;
 					// Update childData
 					childData.name = data.name;
 					childData.status = 'active';
@@ -326,21 +329,6 @@ async function updateModules ( path, oldModules, addition ) {
 // ────────────────────────────── # AGENT LOGINS ──────────────────────────────
 async function loginAgents() {
 	
-	try {
-		const cache = Filesystem.readdirSync(CLIENT.CACHE_PATH).filter((file) => ['json', 'png', 'mp4', 'mp3', 'jpg', 'txt'].includes((file.split('.')).pop()));
-		cache.forEach((file) => {
-			try {
-				Filesystem.unlinkSync(Path.join(CLIENT.CACHE_PATH, file));
-			} catch (e) {};
-		});
-	} catch (_err) {
-		console.error(_err);
-	}
-	
-	/// Copy and Make a new Log.txt > Old logs will be sent to main bot on start up
-	const time = Moment().tz('Asia/Manila').format('MMMM DD, YYYY');
-	Filesystem.writeFileSync(CLIENT.LOG_PATH, `Logs Start Date » ${time} ==================>\n`); /*(Filesystem.existsSync(CLIENT.LOG_PATH)) ? Filesystem.readFileSync(CLIENT.LOG_PATH): Filesystem.writeFileSync(CLIENT.LOG_PATH, `Logs Start Date » ${time} ==================>\n`);*/
-	
 	// LOG-IN EACH CREDENTIAL AND START LISTENING
 	const Credentials = Filesystem.readdirSync(CLIENT.APPSTATE_PATH).filter((file) => file.endsWith('.json') && !file.startsWith('_'));
 	Logger.makeLog(CLIENT.LOG_PATH, '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'login');
@@ -388,14 +376,26 @@ async function starter() {
 	
 	Logger.makeLog(CLIENT.LOG_PATH, `${CLIENT.CONFIG.NAME} »`, '--');
 	process.env.IS_SERVICE_RESTARTING = 'false';
-
+	
 	await start_server();
 	
-	Logger.makeLog(CLIENT.LOG_PATH, '─────────────────────────────────────────────', '--');
-
+	Logger.makeLog(CLIENT.LOG_PATH, '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', '--');
+	
+	try {
+		const cache = Filesystem.readdirSync(CLIENT.CACHE_PATH).filter((file) => ['json', 'png', 'mp4', 'mp3', 'jpg', 'txt'].includes((file.split('.')).pop()));
+		cache.forEach((file) => {
+			try {
+				Filesystem.unlinkSync(Path.join(CLIENT.CACHE_PATH, file));
+			} catch (e) {};
+		});
+	} catch (_err) {
+		console.error(_err);
+	}
+	
 	// LOAD MODULES
 	const modulesFolder = Filesystem.readdirSync(Path.join(CLIENT.ROOT_PATH, 'modules'));
 	CLIENT.MODULES = await modules.load(modulesFolder, CLIENT);
+	
 	// Watch any changes from modules and reload
 	watchAndReloadConfig(
 		[ CLIENT.MODULES_PATH, CLIENT.CONFIG_PATH ], 'change',
