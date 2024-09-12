@@ -148,10 +148,11 @@ function start( input ) {
 				}
 			});
 			
-			/// INITIALIZE CHARACTER AI
+			/* INITIALIZE CHARACTER AI
 			Logger.makeLog(CLIENT.LOG_PATH, `Authenticating AI Characters...`, 'login');
 			const characterAI = require(Path.join(CLIENT.ROOT_PATH, 'utilities', '/initCharacterAI.js'));
 			const CharacterAI = await characterAI.authenticate(CLIENT.ROOT_PATH, Logger);
+			*/
 			
 			/// START UP NOTIFY MAIN GROUP CHATS
 			Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID}(${BOT_INFO.NAME}) » Notifying Administrators.`, 'bot');
@@ -174,7 +175,7 @@ function start( input ) {
 			
 			/// PREPARE INITIAL INPUTS
 			const Inputs = { API, CLIENT, MODULES };
-			Inputs.CharacterAI = CharacterAI;
+			//Inputs.CharacterAI = CharacterAI;
 			
 			/// LISTENER CALLBACK
 

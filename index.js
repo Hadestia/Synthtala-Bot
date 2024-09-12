@@ -83,6 +83,7 @@ const start_server = async function () {
 		process.exit();
 	} 
 	
+	const port = process.env.PORT || 3000;
 	const App = express();
 	App.use(cors());
 	App.use(helmet());
@@ -118,7 +119,7 @@ const start_server = async function () {
 	
 	
 	App.get('/ip', (req, res) => res.send(req.ip));
-	App.get('/running-bot', (req, res) => res.json(CLIENT.ACTIVE_AGENT));
+	App.get('/running-bot', (req, res) => res.json(CLIENT.AGENTS));
 	App.get('/logs', (_, res) => {
 		res.sendFile(Path.join(CLIENT.CACHE_PATH, 'Log.txt'));
 	});
@@ -147,9 +148,9 @@ const start_server = async function () {
 		}
 	});
 	
-	await App.listen(3009, () => {
+	await App.listen(port, () => {
 		Logger.makeLog(CLIENT.LOG_PATH, `Server » ${CLIENT.SERVER_LINK}`, '--');
-		Logger.makeLog(CLIENT.LOG_PATH, `Server Status » ONLINE - running on port ${App.get('port')}`, '--');
+		Logger.makeLog(CLIENT.LOG_PATH, `Server Status » ONLINE - running on port ${port}`, '--');
 		// Upload Pinger to side server
 		Axios.get(encodeURI(`${CLIENT.SIDE_SERVER_LINK}/autoPing?name=Synthtala-Bot-Get&link=${CLIENT.SERVER_LINK}`)).then(()=> {}).catch(()=>{});
 	});
