@@ -24,23 +24,23 @@ const CLIENT = {
 	
 	MODULES: {},
 	
-	ROOT_PATH: __dirname,
+	ROOT_PATH: process.cwd(),
 	
 	START_TIME: new Date().getTime(),
 	
-	CACHE_PATH: Path.join(__dirname, 'cache'),
+	CACHE_PATH: Path.join(process.cwd(), 'cache'),
 	
-	MODULES_PATH: Path.join(__dirname, 'modules'),
+	MODULES_PATH: Path.join(process.cwd(), 'modules'),
 	
-	LOG_PATH: Path.join(__dirname, 'cache', 'Log.txt'),
+	LOG_PATH: Path.join(process.cwd(), 'cache', 'Log.txt'),
 	
-	OLD_LOG_PATH: Path.join(__dirname, 'cache', 'old_log.txt'),
+	OLD_LOG_PATH: Path.join(process.cwd(), 'cache', 'old_log.txt'),
 	
-	APPSTATE_PATH: Path.join(__dirname, '@synthtala', 'appstates/'),
+	APPSTATE_PATH: Path.join(process.cwd(), '@synthtala', 'appstates'),
 	
 	CONFIG: Filesystem.readJsonSync('./json/bot_configuration.json'),
 	
-	CONFIG_PATH: Path.join(__dirname, 'json', 'bot_configuration.json'),
+	CONFIG_PATH: Path.join(process.cwd(), 'json', 'bot_configuration.json'),
 	
 	COMMAND_CATEGORY_REF: Filesystem.readJsonSync('./json/ref-commandCategories.json'),
 	
@@ -325,11 +325,25 @@ async function updateModules ( path, oldModules, addition ) {
 }
 
 // ────────────────────────────── # AGENT LOGINS ──────────────────────────────
+
+function isDirEmpty(dir) {
+	try {
+		const files = Filesystem.readdirSync(dir);
+		return files.length == 0;
+	} catch (err) {
+		return false
+	}
+}
+
 async function loginAgents() {
 	
-	// LOG-IN EACH CREDENTIAL AND START LISTENING
-	const Credentials = Filesystem.readdirSync(CLIENT.APPSTATE_PATH).filter((file) => file.endsWith('.json') && !file.startsWith('_'));
 	Logger.makeLog(CLIENT.LOG_PATH, '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'login');
+
+	// LOG-IN EACH CREDENTIAL AND START LISTENING
+	let Credentials = [];
+	if (!isDirEmpty(dir)) {
+		Credentials = (Filesystem.readdirSync(CLIENT.APPSTATE_PATH)).filter((file) => file.endsWith('.json') && !file.startsWith('_'));
+	}
 	
 	for (const candidate of Credentials) {
 		const candidatePath = Path.join(CLIENT.APPSTATE_PATH, candidate);
