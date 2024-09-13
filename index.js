@@ -34,9 +34,9 @@ const CLIENT = {
 	
 	LOG_PATH: Path.join(process.cwd(), 'cache', 'Log.txt'),
 	
-	DATA_PATH: Path.join(process.cwd(), 'data'),
+	DATA_PATH: Path.join(process.cwd(), '@synthtala'),
 	
-	APPSTATE_PATH: Path.join(process.cwd(), 'data', 'appstates'),
+	APPSTATE_PATH: Path.join(process.cwd(), '@synthtala', 'appstates'),
 	
 	CONFIG: Filesystem.readJsonSync('./json/bot_configuration.json'),
 	
@@ -398,16 +398,12 @@ async function startServer() {
 	// Login Agents
 	let Credentials = Filesystem.readdirSync(CLIENT.APPSTATE_PATH).filter((file) => { return !(file.startsWith('_') && file.startsWith('.')) && file.endsWith('.json') });
 	
-	/* Login AppState from Secrets
-	if (Credentials.length == 0) {
-		if (process.env.MAIN_APPSTATE) {
-			await newSession(process.env.MAIN_APPSTATE, '', '<Environment Variable>').then((data) => {}).catch((err) => {
-				Logger.makeLog(CLIENT.LOG_PATH, `Main Appstate » Error While Starting New Session`, 'error');
-				Logger.makeLog(CLIENT.LOG_PATH, err, 'error');
-			});
-		} else {
-			return Logger.makeLog(CLIENT.LOG_PATH, `There's no credentials in the appstate folder for logins. End of the process :/`, 'warn');
-		}
+	// Login AppState from Secrets
+	if (process.env.MAIN_APPSTATE) {
+		await newSession(process.env.MAIN_APPSTATE, '', '<Environment Variable>').then((data) => {}).catch((err) => {
+			Logger.makeLog(CLIENT.LOG_PATH, `ENV APPSTATE » Error While Starting New Session`, 'error');
+			Logger.makeLog(CLIENT.LOG_PATH, err, 'error');
+		});
 	}
 	
 	for (const candidate of Credentials) {
@@ -426,7 +422,10 @@ async function startServer() {
 			});
 		}
 	}
-	*/
+	
+	if (Credentials.length == 0 && !process.env.MAIN_APPSTATE) {
+		return Logger.makeLog(CLIENT.LOG_PATH, `There's no credentials found to login. Ending process... :/`, 'warn');
+	}
 	
 	// KEEP THE SERVER BUSY
 	setInterval(async () => {
