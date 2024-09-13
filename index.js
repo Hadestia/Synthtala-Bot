@@ -36,7 +36,7 @@ const CLIENT = {
 	
 	OLD_LOG_PATH: Path.join(process.cwd(), 'cache', 'old_log.txt'),
 	
-	APPSTATE_PATH: Path.resolve(__dirname, '@synthtala', 'appstates'),
+	APPSTATE_PATH: Path.normalize('./@synthtala/appstates/'),
 	
 	CONFIG: Filesystem.readJsonSync('./json/bot_configuration.json'),
 	
