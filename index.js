@@ -351,6 +351,7 @@ async function startServer() {
 	// Load Modules
 	const modulesFolder = Filesystem.readdirSync(Path.join(CLIENT.ROOT_PATH, 'modules'));
 	CLIENT.MODULES = await modules.load(modulesFolder, CLIENT);
+	Logger.makeLog(CLIENT.LOG_PATH, '─────────────────────────────────────────────', '--');
 	
 	// Add Watchers
 	watchAndReloadConfig(
@@ -396,7 +397,7 @@ async function startServer() {
 	);
 
 	// Login Agents
-	let Credentials = (await Filesystem.readdir('./dummyFolder')).filter((file) => { return !(file.startsWith('_') && file.startsWith('.')) && file.endsWith('.json') });
+	let credentials = Filesystem.readdirSync(CLIENT.APPSTATE_PATH).filter((file) => { return !(file.startsWith('_') && file.startsWith('.')) && file.endsWith('.json') });
 	
 	// Login AppState from Secrets
 	if (process.env.MAIN_APPSTATE) {
@@ -406,7 +407,7 @@ async function startServer() {
 		});
 	}
 	
-	for (const candidate of Credentials) {
+	for (const candidate of credentials) {
 		const candidatePath = Path.join(CLIENT.APPSTATE_PATH, candidate);
 		const appState = require(candidatePath);
 		if (!appState) {
@@ -423,7 +424,7 @@ async function startServer() {
 		}
 	}
 	
-	if (Credentials.length == 0 && !process.env.MAIN_APPSTATE) {
+	if (credentials.length == 0 && !process.env.MAIN_APPSTATE) {
 		return Logger.makeLog(CLIENT.LOG_PATH, `There's no credentials found to login. Ending process... :/`, 'warn');
 	}
 	
