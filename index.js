@@ -398,6 +398,8 @@ async function startServer() {
 	// Login Agents
 	let Credentials = Filesystem.readdirSync(CLIENT.APPSTATE_PATH).filter((file) => { return !(file.startsWith('_') && file.startsWith('.')) && file.endsWith('.json') });
 	
+	console.log(Credentials);
+	
 	for (const candidate of Credentials) {
 		const candidatePath = Path.join(CLIENT.APPSTATE_PATH, candidate);
 		const appState = require(candidatePath);
