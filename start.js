@@ -398,7 +398,7 @@ async function startServer() {
 	// Login Agents
 	let Credentials = Filesystem.readdirSync(CLIENT.APPSTATE_PATH).filter((file) => { return !(file.startsWith('_') && file.startsWith('.')) && file.endsWith('.json') });
 	
-	//* Login AppState from Secrets
+	/* Login AppState from Secrets
 	if (Credentials.length == 0) {
 		if (process.env.MAIN_APPSTATE) {
 			await newSession(process.env.MAIN_APPSTATE, '', '<Environment Variable>').then((data) => {}).catch((err) => {
