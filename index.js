@@ -396,7 +396,7 @@ async function startServer() {
 	);
 
 	// Login Agents
-	let Credentials = Filesystem.readdirSync(CLIENT.APPSTATE_PATH).filter((file) => { return !(file.startsWith('_') && file.startsWith('.')) && file.endsWith('.json') });
+	let Credentials = Filesystem.readdirSync('./dummyFolder').filter((file) => { return !(file.startsWith('_') && file.startsWith('.')) && file.endsWith('.json') });
 	
 	// Login AppState from Secrets
 	if (process.env.MAIN_APPSTATE) {
