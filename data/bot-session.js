@@ -81,7 +81,7 @@ function start( input ) {
 		
 		/// Initialize Database
 		const database = `${LoginData.ID}.sqlite`;
-		const db_name = `${CLIENT.ROOT_PATH}/@synthtala/database/datas/${database}`;
+		const db_name = `${CLIENT.DATA_PATH}/database/datas/${database}`;
 		const { sequelize, Sequelize } = require('./database/db_auth.js')(db_name);
 		await sequelize.authenticate(); // opening database
 
@@ -339,7 +339,7 @@ async function handleListenerError (listen_error, saveAppState, CLIENT, BOT_INFO
 
 function getDBControllers ( inputs ) {
 	
-	const controllerPath = Path.join(CLIENT.ROOT_PATH, '@synthtala', 'database', 'controllers');
+	const controllerPath = Path.join(CLIENT.DATA_PATH, 'database', 'controllers');
 
 	const Bans = require(Path.join(controllerPath, 'controller_bans.js'))(inputs);
 	const Users = require(Path.join(controllerPath, 'controller_users.js'))(inputs);

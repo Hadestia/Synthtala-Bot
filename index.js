@@ -34,9 +34,9 @@ const CLIENT = {
 	
 	LOG_PATH: Path.join(process.cwd(), 'cache', 'Log.txt'),
 	
-	OLD_LOG_PATH: Path.join(process.cwd(), 'cache', 'old_log.txt'),
+	DATA_PATH: Path.join(process.cwd(), 'data'),
 	
-	APPSTATE_PATH: Path.join(process.cwd(), '@synthtala', 'appstates'),
+	APPSTATE_PATH: Path.join(process.cwd(), 'data', 'appstates'),
 	
 	CONFIG: Filesystem.readJsonSync('./json/bot_configuration.json'),
 	
@@ -178,7 +178,7 @@ async function newSession ( appstate, appStatePath, fileName, restart) {
 		
 		Logger.makeLog(CLIENT.LOG_PATH, `${(restart) ? 'Restarting' : 'Starting new'} session for ${fileName}`, 'login');
 			
-		let child = ChildProcess.fork(`${CLIENT.ROOT_PATH}/@synthtala/bot-session.js`, null, {
+		let child = ChildProcess.fork(`${CLIENT.DATA_PATH}/bot-session.js`, null, {
 			cwd: __dirname,
 			stdio: 'inherit',
 			shell: true,
