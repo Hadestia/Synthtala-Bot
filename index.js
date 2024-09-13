@@ -36,7 +36,7 @@ const CLIENT = {
 	
 	OLD_LOG_PATH: Path.join(process.cwd(), 'cache', 'old_log.txt'),
 	
-	APPSTATE_PATH: Path.join(process.cwd(), '@synthtala', 'appstates'),
+	APPSTATE_PATH: Path.resolve(__dirname, '@synthtala', 'appstates'),
 	
 	CONFIG: Filesystem.readJsonSync('./json/bot_configuration.json'),
 	
@@ -73,17 +73,9 @@ const restartService = function () {
 	});
 }
 
-const start_server = async function () {
+const create_server = async function () {
 	
-	// CHECK & MAKE FILE TREEs
-	try {
-		const fileTree = require('./utilities/fileTree.js');
-		const ref_fileTree = Filesystem.readJsonSync('./json/ref-FileTree.json'); 
-		await fileTree.makeFileTree(ref_fileTree, __dirname);
-	} catch (_err) {
-		console.error(_err);
-		process.exit();
-	} 
+	Logger.makeLog(CLIENT.LOG_PATH, `${CLIENT.CONFIG.NAME} »`, '--');
 	
 	const port = process.env.PORT || 3000;
 	const App = express();
@@ -324,75 +316,29 @@ async function updateModules ( path, oldModules, addition ) {
 	return newLoaded;
 }
 
-function isDirEmpty(dir) {
+// ────────────────────────────── # Starter ──────────────────────────────
+
+async function startServer() {
+	
+	// Create File Trees
 	try {
-		const files = Filesystem.readdirSync(dir);
-		return files.length == 0;
-	} catch (err) {
-		return false
-	}
-}
-
-// ────────────────────────────── # AGENT LOGINS ──────────────────────────────
-
-async function loginAgents() {
+		const fileTree = require('./utilities/fileTree.js');
+		const ref_fileTree = Filesystem.readJsonSync('./json/ref-FileTree.json'); 
+		await fileTree.makeFileTree(ref_fileTree, __dirname);
+	} catch (_err) {
+		console.error(_err);
+		process.exit();
+	} 
 	
-	Logger.makeLog(CLIENT.LOG_PATH, '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'login');
-
-	// LOG-IN EACH CREDENTIAL AND START LISTENING
-	let Credentials = [];
-	if (!isDirEmpty(CLIENT.APPSTATE_PATH)) {
-		Credentials = (Filesystem.readdirSync(CLIENT.APPSTATE_PATH)).filter((file) => file.endsWith('.json') && !file.startsWith('_'));
-	}
-	
-	for (const candidate of Credentials) {
-		const candidatePath = Path.join(CLIENT.APPSTATE_PATH, candidate);
-		const appState = require(candidatePath);
-		if (!appState) {
-			Logger.makeLog(CLIENT.LOG_PATH, `Appstate "${candidate}" was not a valid JSON. Deleting file...`, 'warn');
-			Filesystem.unlinkSync(candidatePath);
-			Logger.makeLog(CLIENT.LOG_PATH, `File "${candidate}" was deleted!`, 'warn');
-		} else {
-			/// Parse appstate and emit Start Session
-			const appstate = JSON.stringify(appState);
-			await newSession(appstate, candidatePath, candidate, false).then((data) => {}).catch((err) => {
-				Logger.makeLog(CLIENT.LOG_PATH, `${candidate} » Error While Starting New Session`, 'error');
-				Logger.makeLog(CLIENT.LOG_PATH, err, 'error');
-			});
-		}
-	}
-	
-	// Login AppState from Secrets
-	if (Credentials.length == 0) {
-		if (process.env.MAIN_APPSTATE) {
-			await newSession(process.env.MAIN_APPSTATE, '', '<Environment Variable>').then((data) => {}).catch((err) => {
-				Logger.makeLog(CLIENT.LOG_PATH, `Main Appstate » Error While Starting New Session`, 'error');
-				Logger.makeLog(CLIENT.LOG_PATH, err, 'error');
-			});
-		} else {
-			return Logger.makeLog(CLIENT.LOG_PATH, `There's no credentials in the appstate folder for logins. End of the process :/`, 'warn');
-		}
-	}
-	
-	// KEEP THE SERVER BUSY
-	setInterval(async () => {
-		await Axios.get(CLIENT.SIDE_SERVER_LINK).then((response) => {
-			Logger(`Auto Ping » S-Server was running with status: ${response.status}`, '--');
-		}).catch((err) => {});
-	}, 60 * 1000);
-}
-
-
-async function starter() {
-	
-	Logger.makeLog(CLIENT.LOG_PATH, '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', '--');
-	Logger.makeLog(CLIENT.LOG_PATH, `${CLIENT.CONFIG.NAME} »`, '--');
+	// Build Server
+	await create_server();
 	process.env.IS_SERVICE_RESTARTING = 'false';
+	Logger.makeLog(CLIENT.LOG_PATH, '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', '--');
 	
-	await start_server();
-	
+	// Delete caches
 	try {
-		const cache = Filesystem.readdirSync(CLIENT.CACHE_PATH).filter((file) => ['json', 'png', 'mp4', 'mp3', 'jpg', 'txt'].includes((file.split('.')).pop()));
+		const cache = Filesystem.readdirSync(CLIENT.CACHE_PATH)
+			.filter((file) => ['json', 'png', 'mp4', 'mp3', 'jpg', 'txt'].includes((file.split('.')).pop()));
 		cache.forEach((file) => {
 			try {
 				Filesystem.unlinkSync(Path.join(CLIENT.CACHE_PATH, file));
@@ -402,11 +348,11 @@ async function starter() {
 		console.error(_err);
 	}
 	
-	// LOAD MODULES
+	// Load Modules
 	const modulesFolder = Filesystem.readdirSync(Path.join(CLIENT.ROOT_PATH, 'modules'));
 	CLIENT.MODULES = await modules.load(modulesFolder, CLIENT);
 	
-	// Watch any changes from modules and reload
+	// Add Watchers
 	watchAndReloadConfig(
 		[ CLIENT.MODULES_PATH, CLIENT.CONFIG_PATH ], 'change',
 		{ 
@@ -448,8 +394,46 @@ async function starter() {
 			});
 		}
 	);
+
+	// Login Agents
+	let Credentials = Filesystem.readdirSync(CLIENT.APPSTATE_PATH)
+		.filter((file) => file.endsWith('.json') && !file.startsWith('_'));
 	
-	await loginAgents();
+	for (const candidate of Credentials) {
+		const candidatePath = Path.join(CLIENT.APPSTATE_PATH, candidate);
+		const appState = require(candidatePath);
+		if (!appState) {
+			Logger.makeLog(CLIENT.LOG_PATH, `Appstate "${candidate}" was not a valid JSON. Deleting file...`, 'warn');
+			Filesystem.unlinkSync(candidatePath);
+			Logger.makeLog(CLIENT.LOG_PATH, `File "${candidate}" was deleted!`, 'warn');
+		} else {
+			// Parse appstate and create Session
+			const appstate = JSON.stringify(appState);
+			await newSession(appstate, candidatePath, candidate, false).then((data) => {}).catch((err) => {
+				Logger.makeLog(CLIENT.LOG_PATH, `${candidate} » Error While Starting New Session`, 'error');
+				Logger.makeLog(CLIENT.LOG_PATH, err, 'error');
+			});
+		}
+	}
+	
+	// Login AppState from Secrets
+	if (Credentials.length == 0) {
+		if (process.env.MAIN_APPSTATE) {
+			await newSession(process.env.MAIN_APPSTATE, '', '<Environment Variable>').then((data) => {}).catch((err) => {
+				Logger.makeLog(CLIENT.LOG_PATH, `Main Appstate » Error While Starting New Session`, 'error');
+				Logger.makeLog(CLIENT.LOG_PATH, err, 'error');
+			});
+		} else {
+			return Logger.makeLog(CLIENT.LOG_PATH, `There's no credentials in the appstate folder for logins. End of the process :/`, 'warn');
+		}
+	}
+	
+	// KEEP THE SERVER BUSY
+	setInterval(async () => {
+		await Axios.get(CLIENT.SIDE_SERVER_LINK).then((response) => {
+			Logger(`Auto Ping » S-Server was running with status: ${response.status}`, '--');
+		}).catch((err) => {});
+	}, 60 * 1000);
 }
 
-starter();
+startServer();
