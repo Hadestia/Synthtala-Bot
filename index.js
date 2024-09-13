@@ -36,7 +36,7 @@ const CLIENT = {
 	
 	OLD_LOG_PATH: Path.join(process.cwd(), 'cache', 'old_log.txt'),
 	
-	APPSTATE_PATH: Path.normalize('./@synthtala/appstates/'),
+	APPSTATE_PATH: Path.join(process.cwd(), '@synthtala', 'appstates'),
 	
 	CONFIG: Filesystem.readJsonSync('./json/bot_configuration.json'),
 	
@@ -324,7 +324,7 @@ async function startServer() {
 	try {
 		const fileTree = require('./utilities/fileTree.js');
 		const ref_fileTree = Filesystem.readJsonSync('./json/ref-FileTree.json'); 
-		await fileTree.makeFileTree(ref_fileTree, __dirname);
+		await fileTree.makeFileTree(ref_fileTree, __dirname, CLIENT, Logger);
 	} catch (_err) {
 		console.error(_err);
 		process.exit();
