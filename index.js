@@ -324,8 +324,6 @@ async function updateModules ( path, oldModules, addition ) {
 	return newLoaded;
 }
 
-// ────────────────────────────── # AGENT LOGINS ──────────────────────────────
-
 function isDirEmpty(dir) {
 	try {
 		const files = Filesystem.readdirSync(dir);
@@ -335,13 +333,15 @@ function isDirEmpty(dir) {
 	}
 }
 
+// ────────────────────────────── # AGENT LOGINS ──────────────────────────────
+
 async function loginAgents() {
 	
 	Logger.makeLog(CLIENT.LOG_PATH, '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'login');
 
 	// LOG-IN EACH CREDENTIAL AND START LISTENING
 	let Credentials = [];
-	if (!isDirEmpty(dir)) {
+	if (!isDirEmpty(CLIENT.APPSTATE_PATH)) {
 		Credentials = (Filesystem.readdirSync(CLIENT.APPSTATE_PATH)).filter((file) => file.endsWith('.json') && !file.startsWith('_'));
 	}
 	
