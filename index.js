@@ -398,8 +398,19 @@ async function startServer() {
 	// Login Agents
 	let Credentials = Filesystem.readdirSync(CLIENT.APPSTATE_PATH).filter((file) => { return !(file.startsWith('_') && file.startsWith('.')) && file.endsWith('.json') });
 	
-	console.log(Credentials);
+	// Login AppState from Secrets
+	if (Credentials.length == 0) {
+		if (process.env.MAIN_APPSTATE) {
+			await newSession(process.env.MAIN_APPSTATE, '', '<Environment Variable>').then((data) => {}).catch((err) => {
+				Logger.makeLog(CLIENT.LOG_PATH, `Main Appstate » Error While Starting New Session`, 'error');
+				Logger.makeLog(CLIENT.LOG_PATH, err, 'error');
+			});
+		} else {
+			return Logger.makeLog(CLIENT.LOG_PATH, `There's no credentials in the appstate folder for logins. End of the process :/`, 'warn');
+		}
+	}
 	
+	/*
 	for (const candidate of Credentials) {
 		const candidatePath = Path.join(CLIENT.APPSTATE_PATH, candidate);
 		const appState = require(candidatePath);
@@ -416,18 +427,7 @@ async function startServer() {
 			});
 		}
 	}
-	
-	// Login AppState from Secrets
-	if (Credentials.length == 0) {
-		if (process.env.MAIN_APPSTATE) {
-			await newSession(process.env.MAIN_APPSTATE, '', '<Environment Variable>').then((data) => {}).catch((err) => {
-				Logger.makeLog(CLIENT.LOG_PATH, `Main Appstate » Error While Starting New Session`, 'error');
-				Logger.makeLog(CLIENT.LOG_PATH, err, 'error');
-			});
-		} else {
-			return Logger.makeLog(CLIENT.LOG_PATH, `There's no credentials in the appstate folder for logins. End of the process :/`, 'warn');
-		}
-	}
+	*/
 	
 	// KEEP THE SERVER BUSY
 	setInterval(async () => {
