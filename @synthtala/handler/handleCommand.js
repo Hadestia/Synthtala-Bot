@@ -245,10 +245,10 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 		
 		Inputs.CharacterAI = CharacterAI;
 		Inputs.HandleCommandReply = HandleCommandReply;
-				
+		
+		const moduleScript = require(module.moduleScriptPath);
 		// Execute
 		try {
-			const moduleScript = require(module.moduleScriptPath);
 			//const ping = Math.abs(time_initiated - Date.now());
 			if (moduleScript.run && typeof(moduleScript.run) === 'function') {
 				if (moduleScript.run.constructor.name === 'AsyncFunction') {

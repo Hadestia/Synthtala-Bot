@@ -131,7 +131,7 @@ function start( input ) {
 
 			/// FETCH HANDLERS
 			Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID}(${BOT_INFO.NAME}) » Preparing Handlers...`, 'bot');
-			const handler_inputs = { CLIENT, BOT_INFO, Bans, Users, Threads, Utils, Logger };
+			const handler_inputs = { CLIENT, BOT_INFO, Bans, Users, Threads, Commands, Utils, Logger };
 			
 			const handler_Event = require('./handler/handleEvent.js')(handler_inputs);
 			const handler_Database = require('./handler/handleDatabase.js')(handler_inputs);
