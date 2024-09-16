@@ -3,6 +3,7 @@
 const Moment = require('moment-timezone');
 const Logger = require('./utilities/logger.js');
 const ChildProcess = require('child_process');
+const Util = require('./utilities/utils.js');
 const Filesystem = require('fs-extra');
 const Chokidar = require('chokidar');
 const Axios = require('axios');
@@ -397,32 +398,13 @@ async function startServer() {
 	);
 
 	// Login Agents
-	let credentials = Filesystem.readdirSync(CLIENT.APPSTATE_PATH).filter((file) => { return !(file.startsWith('_') && file.startsWith('.')) && file.endsWith('.json') });
-	
-	// Login AppState from Secrets
-	if (process.env.MAIN_APPSTATE) {
-		await newSession(process.env.MAIN_APPSTATE, '', '<Environment Variable>').then((data) => {}).catch((err) => {
-			Logger.makeLog(CLIENT.LOG_PATH, `ENV APPSTATE » Error While Starting New Session`, 'error');
-			Logger.makeLog(CLIENT.LOG_PATH, err, 'error');
-		});
-	}
-	
-	for (const candidate of credentials) {
-		const candidatePath = Path.join(CLIENT.APPSTATE_PATH, candidate);
-		const appState = require(candidatePath);
-		if (!appState) {
-			Logger.makeLog(CLIENT.LOG_PATH, `Appstate "${candidate}" was not a valid JSON. Deleting file...`, 'warn');
-			Filesystem.unlinkSync(candidatePath);
-			Logger.makeLog(CLIENT.LOG_PATH, `File "${candidate}" was deleted!`, 'warn');
-		} else {
-			// Parse appstate and create Session
-			const appstate = JSON.stringify(appState);
-			await newSession(appstate, candidatePath, candidate, false).then((data) => {}).catch((err) => {
-				Logger.makeLog(CLIENT.LOG_PATH, `${candidate} » Error While Starting New Session`, 'error');
-				Logger.makeLog(CLIENT.LOG_PATH, err, 'error');
-			});
+	let credentials = Util.getDirFiles(
+		CLIENT.APPSTATE_PATH,
+		function (file) {
+			return !(file.startsWith('_') && file.startsWith('.')) && file.endsWith('.json');
 		}
-	}
+	);
+	
 	
 	if (credentials.length == 0 && !process.env.MAIN_APPSTATE) {
 		return Logger.makeLog(CLIENT.LOG_PATH, `There's no credentials found to login. Ending process... :/`, 'warn');

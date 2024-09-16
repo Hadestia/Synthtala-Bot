@@ -2,6 +2,7 @@ const os = require('os');
 const crypto = require('crypto');
 const Logger = require('./logger.js');
 const Path = require('path');
+const Filesystem = require('fs-extra');
 
 module.exports.cleanAnilistHTML = function (text) {
 	text = text
@@ -112,11 +113,28 @@ module.exports.removeNonASCII = function (str) {
 	return (str.replace(/[^\x20-\x7E]/g, '')).normalize('NFKD');
 }
 
+module.exports.getDirFiles(path, filterFunc) {
+	function hasContents(path) {
+		try {
+			const files = Filesystem.readdirSync(path);
+			return files.length > 0;
+		} catch (err) {
+			return false;
+		}
+	}
+	let arr = [];
+	if (hasContents(path)) {
+		arr = Filesystem.readdirSync(path);
+		return (filterFunc) ? arr.filter(filterFunc) : arr;
+	} else {
+		return arr;
+	}
+}
+
 /// INTERNAL UTILITY FUNCTIONS 
 
 module.exports.INTERNAL = async function ({ API, BOT_INFO, CLIENT, Users, Banned, Commands, Threads }) {
 	
-	const Filesystem = require('fs-extra');
 	const Axios = require('axios');
 	
 	//const editGif = require('./editGif.js');
