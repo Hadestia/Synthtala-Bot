@@ -1,5 +1,6 @@
 const Path = require('path');
 const Filesystem = require('fs-extra');
+const Util = require('./utils.js');
 
 function error(msg) {
 	return `Invalid AppState: ${msg}`;
@@ -38,7 +39,7 @@ module.exports.parse = function ( stringifyAppstate, fromFolder, CLIENT ) {
 			return reject(error('not adhered of required structure!!'));
 		}
 	
-		const appStateFiles = Filesystem.readdirSync(CLIENT.APPSTATE_PATH);
+		const appStateFiles = Util.getDirFiles(CLIENT.APPSTATE_PATH);
 		const existingAppStateValues = appStateFiles.flatMap((filename) => {
 			const filePath = Path.join(CLIENT.APPSTATE_PATH, filename);
 			try {
