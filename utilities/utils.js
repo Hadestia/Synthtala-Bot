@@ -113,7 +113,7 @@ module.exports.removeNonASCII = function (str) {
 	return (str.replace(/[^\x20-\x7E]/g, '')).normalize('NFKD');
 }
 
-module.exports.getDirFiles(path, filterFunc) {
+module.exports.getDirFiles = function (path, filterFunc) {
 	function hasContents(path) {
 		try {
 			const files = Filesystem.readdirSync(path);

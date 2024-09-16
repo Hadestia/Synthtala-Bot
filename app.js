@@ -405,6 +405,13 @@ async function startServer() {
 		}
 	);
 	
+	if (process.env.MAIN_APPSTATE) {
+		await newSession(process.env.MAIN_APPSTATE, '<>', '<ENV>').then((data) => {}).catch((err) => {
+			Logger.makeLog(CLIENT.LOG_PATH, `ENV APPSTATE » Error while starting new session`, 'error');
+			Logger.makeLog(CLIENT.LOG_PATH, err, 'error');
+		});
+	}
+	
 	if (credentials.length == 0 && !process.env.MAIN_APPSTATE) {
 		Logger.makeLog(CLIENT.LOG_PATH, `There's no credentials found to login.`, '--');
 	}
