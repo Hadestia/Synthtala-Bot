@@ -31,9 +31,9 @@
         "starBulletResult": "✦ %1%",
         "bulletResult": "● %1%",
         "greaterthanResult": "❱ %1%",
-        "botInfoFormat": "𝗕𝗼𝘁 𝗶𝗻𝗳𝗼𝗿𝗺𝗮𝘁𝗶𝗼𝗻\n━━━━━━━━━━━━━━━\n\n● prefix: %1%\n● name: %2%\n● id: %3%\n\n● users: %4%\n● groups: %5%\n● runtime: %6%\n\n● events: %7%\n● commands: %8%\n\n● memory: %9%\n● CPU: %10%\n● N-CPU: %11%",
-        "userInfoFormat": "𝗨𝘀𝗲𝗿 𝗶𝗻𝗳𝗼𝗿𝗺𝗮𝘁𝗶𝗼𝗻\n━━━━━━━━━━━━━━━\n\n● name: %1%\n● username: %2%\n● relationship status: %3%\n\n● gender: %4%\n● birthday: %5%\n● followers: %6%\n● address: %7%\n● hometown: %8%\n\n● uid: %9%\n● url: facebook.com/%10%",
-        "userInfoSimpleFormat": "𝗨𝘀𝗲𝗿 𝗶𝗻𝗳𝗼𝗿𝗺𝗮𝘁𝗶𝗼𝗻\n━━━━━━━━━━━━━━━\n\n● name: %1%\n● username: %2%\n● gender: %3%\n\n● uid: %4%\n● url: facebook.com/%5%",
+        "botInfoFormat": "𝗕𝗼𝘁 𝗶𝗻𝗳𝗼𝗿𝗺𝗮𝘁𝗶𝗼𝗻\n───────────────\n● prefix: %1%\n● name: %2%\n● id: %3%\n\n● users: %6%\n● groups: %7%\n\n● events: %4%\n● commands: %5%\n\n● runtime: %8%\n● process (RSS): %9%\n\n𝗦𝗲𝗿𝘃𝗲𝗿\n● total memory: %10%\n● used memory: %11%\n● available memory: %12%",
+        "userInfoFormat": "𝗨𝘀𝗲𝗿 𝗶𝗻𝗳𝗼𝗿𝗺𝗮𝘁𝗶𝗼𝗻\n───────────────\n● name: %1%\n● username: %2%\n● relationship status: %3%\n\n● gender: %4%\n● birthday: %5%\n● followers: %6%\n● address: %7%\n● hometown: %8%\n\n● uid: %9%\n● url: facebook.com/%10%",
+        "userInfoSimpleFormat": "𝗨𝘀𝗲𝗿 𝗶𝗻𝗳𝗼𝗿𝗺𝗮𝘁𝗶𝗼𝗻\n───────────────\n● name: %1%\n● username: %2%\n● gender: %3%\n\n● uid: %4%\n● url: facebook.com/%5%",
         "tiktokDlVideoInfoFormat": "%1% (%2%)\n───────────────\n%3%\n\n● views: %4%\n● shares: %5%"
     },
     "system": {

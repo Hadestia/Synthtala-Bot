@@ -123,7 +123,7 @@ function start( input ) {
 			BOT_INFO.AVATAR_LINK = bot_info.avatar;
 			BOT_INFO.DATABASE_NAME = database;
 			BOT_INFO.APPSTATE_NAME = APPSTATE_FILENAME;
-			BOT_INFO.STARTTIME = Date.now();
+			BOT_INFO.STARTTIME = process.uptime();
 			
 			/// UTILITY FUNCTIONALITIES
 			const Utils = await (require('../utilities/utils.js')).INTERNAL({ API, BOT_INFO, CLIENT, Bans, Users, Threads, Commands });

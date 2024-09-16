@@ -113,6 +113,7 @@ module.exports.removeNonASCII = function (str) {
 	return (str.replace(/[^\x20-\x7E]/g, '')).normalize('NFKD');
 }
 
+
 module.exports.getDirFiles = function (path, filterFunc) {
 	function hasContents(path) {
 		try {
@@ -129,6 +130,25 @@ module.exports.getDirFiles = function (path, filterFunc) {
 	} else {
 		return arr;
 	}
+}
+
+module.exports.formatBytes = function (bytes) {
+	if (bytes < 1024) return `${bytes} bytes`;
+	const units = ['KB', 'MB', 'GB', 'TB'];
+	const index = Math.floor(Math.log(bytes) / Math.log(1024));
+	return `${bytes / Math.pow(1024, index)).toFixed(2)} ${units[index]}`;
+}
+
+// Get memory usage of a specific process
+module.exports.getProcessMemoryUsage(process) {
+	
+	const memoryUsage = process.memoryUsage();
+	const rss = this.formatBytes(memoryUsage.rss);
+	const heapTotal = this.formatBytes(memoryUsage.heapTotal);
+	const heapUsed = this.formatBytes(memoryUsage.heapUsed);
+	const external = this.formatBytes(memoryUsage.external);
+	
+	return { rss, heapTotal, heapUsed, external };
 }
 
 /// INTERNAL UTILITY FUNCTIONS 
@@ -155,6 +175,7 @@ module.exports.INTERNAL = async function ({ API, BOT_INFO, CLIENT, Users, Banned
 	*/
 	
 	// FUNCTIONS...
+	Utils.getProcessMemoryUsage = this.getProcessMemoryUsage;
 	Utils.cleanAnilistHTML = this.cleanAnilistHTML;
 	Utils.removeNonASCII = this.removeNonASCII;
 	Utils.downloadFile = this.downloadFile;
