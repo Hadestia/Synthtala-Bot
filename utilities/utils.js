@@ -136,7 +136,7 @@ module.exports.formatBytes = function (bytes) {
 	if (bytes < 1024) return `${bytes} bytes`;
 	const units = ['KB', 'MB', 'GB', 'TB'];
 	const index = Math.floor(Math.log(bytes) / Math.log(1024));
-	return `${bytes / Math.pow(1024, index)).toFixed(2)} ${units[index]}`;
+	return `${(bytes / Math.pow(1024, index)).toFixed(2)} ${units[index]}`;
 }
 
 // Get memory usage of a specific process
