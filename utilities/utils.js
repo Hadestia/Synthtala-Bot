@@ -140,7 +140,7 @@ module.exports.formatBytes = function (bytes) {
 }
 
 // Get memory usage of a specific process
-module.exports.getProcessMemoryUsage(process) {
+module.exports.getProcessMemoryUsage = function (process) {
 	
 	const memoryUsage = process.memoryUsage();
 	const rss = this.formatBytes(memoryUsage.rss);
