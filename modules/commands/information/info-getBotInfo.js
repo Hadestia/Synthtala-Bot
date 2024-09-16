@@ -9,11 +9,6 @@ module.exports.run = async function ({ args, event, API, BOT_INFO, CLIENT, MODUL
 	const allUsers = await Users.getAll([ 'USERID' ]);
 	const allGroups = await Threads.getAll([ 'THREADID' ]);
 	
-	if (keyWordUsed == 'uptime') {
-		const title = await Utils.fancyFont.get('Running', 1);
-		const subTitle = await Utils.fancyFont.get(`${values[1].val_text}h : ${values[2].val_text}m : ${values[3].val_text}s`, 1);
-		return Message.reply(Utils.textFormat('formats', 'headerNContentThinFormat', title, subTitle));
-	}
 	// Runtime
 	const runtime = process.uptime() - BOT_INFO.STARTTIME;
 	const formattedRuntime = formatRuntime(runtime);
@@ -21,6 +16,12 @@ module.exports.run = async function ({ args, event, API, BOT_INFO, CLIENT, MODUL
 	// Memory
 	const memoryUsage = Utils.getProcessMemoryUsage(process);
 	const serverMemory = getMemory();
+	
+	if (keyWordUsed == 'uptime') {
+		const title = await Utils.fancyFont.get('Running', 1);
+		const subTitle = await Utils.fancyFont.get(formattedRuntime, 1);
+		return Message.reply(Utils.textFormat('formats', 'headerNContentThinFormat', title, subTitle));
+	}
 	
 	// Modules
 	const totalModules = Object.keys(MODULES.commands).length;
@@ -50,7 +51,7 @@ module.exports.run = async function ({ args, event, API, BOT_INFO, CLIENT, MODUL
 		totalModules
 		((onDB) ? allUsers.length : '<database offline>'),
 		((onDB) ? allGroups.length : '<database offline>'),
-		runtime,
+		formattedRuntime,
 		memoryUsage.rss,
 		serverMemory.totalMem,
 		serverMemory.usedMem,
