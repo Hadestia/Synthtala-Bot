@@ -78,7 +78,7 @@ const create_server = async function () {
 	
 	Logger.makeLog(CLIENT.LOG_PATH, `${CLIENT.CONFIG.NAME} »`, '--');
 	
-	const port = process.env.PORT || 1000;
+	const port = process.env.PORT || 10000;
 	const App = express();
 	App.use(cors());
 	App.use(helmet());
