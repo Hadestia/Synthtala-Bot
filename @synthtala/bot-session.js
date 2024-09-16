@@ -51,10 +51,10 @@ function start( input ) {
 			}
 			API.setOptions(CLIENT.CONFIG.FCAOption);
 					
-			// Rename file e.g: "1097657886555777.json"
+			// Rename file e.g: "123xxxxxxx.json"
 			const ID = await API.getCurrentUserID();
 			const PATH = Path.join(CLIENT.APPSTATE_PATH, `${ID}.json`);
-			if (!Filesystem.existsSync(PATH) && APPSTATE_FILENAME !== '<Environment Variable>') {
+			if (!Filesystem.existsSync(PATH) && APPSTATE_FILENAME !== '<ENV>') {
 				Filesystem.unlinkSync(APPSTATE_PATH);
 				Filesystem.writeJsonSync(PATH, appState, { spaces: '\t' });
 				APPSTATE_PATH = PATH;
@@ -68,9 +68,10 @@ function start( input ) {
 	Login.then(async function ( LoginData ) {
 		
 		if ( LoginData.ERROR ) {
-			/// Delete This appstate
-			if (!LoginData.PATH.includes('100074862181079.json')) { // exclude Alyanna
-				if (LoginData.PATH !== '' && APPSTATE_FILENAME !== '<Environment Variable>') {
+			const regExp = new RegExp('^\!.*?\.json$'); // Exclude appstate that has this (!) symbol on the beginning
+			/// Delete this appstate
+			if (!regExp.test(LoginData.PATH)) {
+				if (LoginData.PATH !== '' && APPSTATE_FILENAME !== '<ENV>') {
 					Logger.makeLog(CLIENT.LOG_PATH, `Deleting ${LoginData.PATH} ...`, 'warn');
 					Filesystem.unlinkSync(LoginData.PATH);
 					Logger.makeLog(CLIENT.LOG_PATH, `Appstate was deleted!!`, 'warn');
@@ -90,7 +91,7 @@ function start( input ) {
 		/// AppStateSaver
 		const saveAppState = async function () {
 			try {
-				if (APPSTATE_FILENAME !== '<Environment Variable>') {
+				if (APPSTATE_FILENAME !== '<ENV>') {
 					const appstate = await API.getAppState();
 					Filesystem.writeJsonSync(APPSTATE_PATH, appstate, { spaces: '\t' });
 				}
