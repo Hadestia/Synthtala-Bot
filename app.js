@@ -405,9 +405,8 @@ async function startServer() {
 		}
 	);
 	
-	
 	if (credentials.length == 0 && !process.env.MAIN_APPSTATE) {
-		return Logger.makeLog(CLIENT.LOG_PATH, `There's no credentials found to login. Ending process... :/`, 'warn');
+		Logger.makeLog(CLIENT.LOG_PATH, `There's no credentials found to login.`, '--');
 	}
 	
 	// KEEP THE SERVER BUSY
