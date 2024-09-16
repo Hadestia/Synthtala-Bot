@@ -143,10 +143,10 @@ module.exports.formatBytes = function (bytes) {
 module.exports.getProcessMemoryUsage = function (process) {
 	
 	const memoryUsage = process.memoryUsage();
-	const rss = this.formatBytes(memoryUsage.rss);
-	const heapTotal = this.formatBytes(memoryUsage.heapTotal);
-	const heapUsed = this.formatBytes(memoryUsage.heapUsed);
-	const external = this.formatBytes(memoryUsage.external);
+	const rss = module.exports.formatBytes(memoryUsage.rss);
+	const heapTotal = module.exports.formatBytes(memoryUsage.heapTotal);
+	const heapUsed = module.exports.formatBytes(memoryUsage.heapUsed);
+	const external = module.exports.formatBytes(memoryUsage.external);
 	
 	return { rss, heapTotal, heapUsed, external };
 }
