@@ -51,6 +51,7 @@ module.exports = function (defaultFuncs, api, ctx) {
 			})
 			.catch(function (err) {
 				log.error("uploadAttachment", err);
+				console.error(err);
 				return callback(err);
 			});
 	}

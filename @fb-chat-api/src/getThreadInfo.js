@@ -224,6 +224,7 @@ module.exports = function (defaultFuncs, api, ctx) {
 			})
 			.catch(function (err) {
 				log.error("getThreadInfoGraphQL", err);
+				console.error(err);
 				return callback(err);
 			});
 

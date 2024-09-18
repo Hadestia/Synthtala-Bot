@@ -85,6 +85,7 @@ module.exports = function (defaultFuncs, api, ctx) {
 			})
 			.catch(function (err) {
 				log.error("uploadAttachment", err);
+				console.error(err);
 				return callback(err);
 			});
 	}
@@ -175,6 +176,7 @@ module.exports = function (defaultFuncs, api, ctx) {
 					}
 					else {
 						log.error("sendMessage", resData);
+						console.error(err);
 					}
 					return callback(resData);
 				}
@@ -196,6 +198,7 @@ module.exports = function (defaultFuncs, api, ctx) {
 				if (utils.getType(err) == "Object" && err.error === "Not logged in.") {
 					ctx.loggedIn = false;
 				}
+				console.error(err);
 				return callback(err);
 			});
 	}
