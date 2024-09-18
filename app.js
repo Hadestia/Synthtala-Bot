@@ -211,7 +211,7 @@ async function newSession ( appstate, appStatePath, fileName, restart) {
 		
 		child.on('close', function (code) {
 			Logger.makeLog(CLIENT.LOG_PATH, `Bot-${botID} » Process was exited with code ${code}`, '--');
-			delete CLIENT.ACTIVE_BOT[botID];
+			delete CLIENT.AGENTS[botID];
 		});
 		
 		child.on('error', function ( error ) {

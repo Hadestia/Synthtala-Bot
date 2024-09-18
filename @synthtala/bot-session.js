@@ -305,7 +305,7 @@ function start( input ) {
 					message: '-logged',
 					name: BOT_INFO.FULLNAME,
 					start_time: BOT_INFO.STARTTIME,
-					process_time: process.uptime() - BOT_INFO.STARTTIME;
+					process_time: process.uptime() - BOT_INFO.STARTTIME
 				}
 			);
 			
