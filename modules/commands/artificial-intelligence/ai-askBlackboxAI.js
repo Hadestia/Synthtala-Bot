@@ -49,11 +49,14 @@ module.exports.run = async function ({ args, event, Message, Utils, Post, Logger
 		Axios.post('https://www.blackbox.ai/api/chat', config, headers),
 		new Promise((_, rej) => setTimeout(() => rej(`${ModuleData.id} Request Timeout for prompt: "${prompt}"`), 600000))
 	]).then(async (response) => {
-		
-		// format bold text
 		let ai_response = (response.data).replace(/^\$@\$.*?\$@\$/g, '');
 		let supposedlyBold = ai_response.match(/\*\*.*?\*\*/g) || [];
-		console.log(supposedlyBold);
+		// format bold text
+		for (let text of supposedlyBold) {
+			let formatted = await Utils.fancyFont.get(text, 1)
+			formatted = formatted.replaceAll('*', '');
+			ai_response = ai_response.replaceAll(text, formatted);
+		}
 		
 		const title = await Utils.fancyFont.get('BlackboxAI', 1);
 		

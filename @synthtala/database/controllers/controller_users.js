@@ -167,7 +167,7 @@ module.exports = function ({ Models, API, textFormat }) {
 	}
 	
 	Ctrl.getAvatarLink = function ( userID ) {
-		return `https://graph.facebook.com/${userID}/picture?height=1000&width=1000&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`;
+		return `https://graph.facebook.com/${userID}/picture?height=1024&width=1024&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`;
 	}
 	
 	Ctrl.getAvatar = function (userID, path) {
