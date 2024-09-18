@@ -52,10 +52,8 @@ module.exports.run = async function ({ args, event, Message, Utils, Post, Logger
 		
 		// format bold text
 		let ai_response = (response.data).replace(/^\$@\$.*?\$@\$/g, '');
-		await (ai_response.match(/\*\*.*?\*\*/g) || []).forEach(async (text) => {
-			const boldText = await Utils.fancyFont.get(text, 1);
-			ai_response.replace(text, boldText);
-		});
+		let supposedlyBold = ai_response.match(/\*\*.*?\*\*/g) || [];
+		console.log(supposedlyBold);
 		
 		const title = await Utils.fancyFont.get('BlackboxAI', 1);
 		

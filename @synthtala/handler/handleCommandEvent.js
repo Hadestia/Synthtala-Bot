@@ -47,7 +47,7 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 				if (moduleScript.handleEvent && typeof(moduleScript.handleEvent) === 'function') {
 					if (moduleData.handleEvent) {
 						for (const type in moduleData.handleEvent) {
-							if (event.type === type.toLowerCase()) {
+							if (moduleData.handleEvent[type] && event.type === type) {
 								//console.log('CMD EVENT CALL:', cmd_id, 'For Thread: ', threadID);
 								Logger.makeLog(CLIENT.LOG_PATH, `Command-Event ${cmd_id} was called at thread-${threadID}.`, 'module');
 								if (moduleScript.handleEvent.constructor.name === 'AsyncFunction') {
