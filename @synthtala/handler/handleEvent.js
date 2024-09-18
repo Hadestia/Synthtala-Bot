@@ -1,6 +1,3 @@
-const Filesystem = require('fs-extra');
-const Path = require('path');
-
 module.exports = function ({ BOT_INFO, Bans, Users, Threads, Commands, Utils, Logger }) {
 	
 	const Handler = {};
@@ -9,19 +6,22 @@ module.exports = function ({ BOT_INFO, Bans, Users, Threads, Commands, Utils, Lo
 		
 		if (event.type !== 'event') return;
 		
+		// Cache Inputs
+		const Inputs = { event, API, CLIENT, BOT_INFO, Utils, Message, Bans, Users, Threads, Commands, Logger, HandleDatebase };
+		
 		for (const evt_id in MODULES.events) {
 			
 			const event_obj = MODULES.events[evt_id];
 			const moduleData = event_obj.moduleData;
-				
-			/// Prepare to execute command
-			const Inputs = { event, API, CLIENT, BOT_INFO, Utils, Message, Bans, Users, Threads, Commands, Logger, HandleDatebase };
+			// Update Inputs
 			Inputs.ModuleData = moduleData;
 				
-			try {
-				const matchedEventType = (moduleData.eventType.indexOf(event.logMessageType) !== -1) ? true : false;
-				if (matchedEventType) {
-					const moduleScript = require(event_obj.moduleScriptPath);
+			const matchedEventType = (moduleData.eventType.indexOf(event.logMessageType) !== -1) ? true : false;
+			
+			if (matchedEventType) {
+				Logger.makeLog(CLIENT.LOG_PATH, `Event ${evt_id} was called at thread-${event.threadID}.`, 'module');
+				const moduleScript = require(event_obj.moduleScriptPath);
+				try {
 					if (moduleScript.run && typeof(moduleScript.run) === 'function') {
 						if (moduleScript.run.constructor.name === 'AsyncFunction') {
 							await moduleScript.run(Inputs);
@@ -29,9 +29,10 @@ module.exports = function ({ BOT_INFO, Bans, Users, Threads, Commands, Utils, Lo
 							moduleScript.run(Inputs);
 						}
 					}
+				} catch (err) {
+					Logger.makeLog(CLIENT.LOG_PATH, `Event ${evt_id} ERROR: ${err}.`, 'error');
+					console.error(err);
 				}
-			} catch (e_error) {
-				console.error(e_error);
 			}
 		}
 	}

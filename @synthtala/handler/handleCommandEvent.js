@@ -28,25 +28,28 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 		if (event.type === 'message_reply' && messageReply) {
 			if (HandleCommandReply.dictionary[messageReply.messageID]) return;
 		}
+		// Cache Inputs
+		const Inputs = { event, API, CLIENT, BOT_INFO, Utils, Message, Bans, Users, Threads, Commands, Logger };
 			
 		for (const cmd_id in MODULES.commands) {
 			
 			const command_obj = MODULES.commands[cmd_id];
 			const moduleData = command_obj.moduleData;
 				
-			/// Prepare to execute command
-			const Inputs = { event, API, CLIENT, BOT_INFO, Utils, Message, Bans, Users, Threads, Commands, Logger };
+			// Update Inputs
 			Inputs.ModuleData = moduleData;
 			Inputs.CharacterAI = CharacterAI;
 			Inputs.HandleCommandReply = HandleCommandReply
 
+			const moduleScript = require(command_obj.moduleScriptPath);
+			
 			try {
-				const moduleScript = require(command_obj.moduleScriptPath);
 				if (moduleScript.handleEvent && typeof(moduleScript.handleEvent) === 'function') {
 					if (moduleData.handleEvent) {
 						for (const type in moduleData.handleEvent) {
 							if (event.type === type.toLowerCase()) {
 								//console.log('CMD EVENT CALL:', cmd_id, 'For Thread: ', threadID);
+								Logger.makeLog(CLIENT.LOG_PATH, `Command-Event ${cmd_id} was called at thread-${threadID}.`, 'module');
 								if (moduleScript.handleEvent.constructor.name === 'AsyncFunction') {
 									await moduleScript.handleEvent(Inputs);
 								} else {
@@ -56,8 +59,9 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 						}
 					}
 				}
-			} catch (e_err) {
-				console.error(e_err);
+			} catch (err) {
+				Logger.makeLog(CLIENT.LOG_PATH, `Command-Event ${cmd_id} ERROR: ${err}`, 'error');
+				console.error(err);
 			}
 		}
 	}

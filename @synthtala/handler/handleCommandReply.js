@@ -22,6 +22,9 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 		
 		if (!messageReply) return;
 		
+		// Cache Inputs
+		const Inputs = { event, API, CLIENT, BOT_INFO, Utils, Message, Post, Bans, Users, Threads, Commands, Logger };
+		
 		// console.dir('messageReply:', messageReply);
 		const groupData = await Threads.getData(threadID);
 		const groupSettings = (groupData) ? groupData.settings : {};
@@ -31,79 +34,75 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 
 		if (Handler.dictionary[replied_messageID]) {
 				
-			try { 
-				
-				const replyInfo = Handler.dictionary[replied_messageID];
+			const replyInfo = Handler.dictionary[replied_messageID];
 					
-				// console.dir(replyInfo);
-				const command_obj = MODULES.commands[replyInfo.commandID];
-				
-				// does not belong to the current sender? | Owner/Admin can interact as well
-				const isBotAdmin = CLIENT.CONFIG.botAdmins.includes(senderID);
-				const isBotOwner = CLIENT.CONFIG.botOwners.includes(senderID);
+			// console.dir(replyInfo);
+			const command_obj = MODULES.commands[replyInfo.commandID];
 			
-				if (replyInfo.senderID !== senderID) {
-					if (!isBotOwner || !isBotAdmin) {
-						Message.reply(Utils.textFormat('errors', 'warningMsg', 'You cannot interact on request by others.'), Utils.autoUnsend);
-						return;
-					}
-				}
-				
-				if (!command_obj) {
-					Message.reply(Utils.textFormat('errors', 'errorMsg', 'Err: <unfound command event>'), Utils.autoUnsend);
+			Logger.makeLog(CLIENT.LOG_PATH, `Command-Reply ${replyInfo.commandID} was called by user-${senderID} from thread-${threadID}.`, 'module');
+			// does not belong to the current sender? | Owner/Admin can interact as well
+			const isBotAdmin = CLIENT.CONFIG.botAdmins.includes(senderID);
+			const isBotOwner = CLIENT.CONFIG.botOwners.includes(senderID);
+			
+			if (replyInfo.senderID !== senderID) {
+				if (!isBotOwner || !isBotAdmin) {
+					Message.reply(Utils.textFormat('errors', 'warningMsg', 'You cannot interact on request by others.'), Utils.autoUnsend);
 					return;
 				}
+			}
 				
-				if (replyInfo.expiration < Date.now()) {
-					Message.reply(Utils.textFormat('errors', 'errorMsg', 'Interaction timeout.'), Utils.autoUnsend);
-					API.unsendMessage(replied_messageID, (e) => {});
-					Handler.deleteReplyInfo(replied_messageID);
-					return;
-				}
+			if (!command_obj) {
+				Message.reply(Utils.textFormat('errors', 'errorMsg', 'Err: <unfound command event>'), Utils.autoUnsend);
+				return;
+			}
+				
+			if (replyInfo.expiration < Date.now()) {
+				Message.reply(Utils.textFormat('errors', 'errorMsg', 'Interaction timeout.'), Utils.autoUnsend);
+				API.unsendMessage(replied_messageID, (e) => {});
+				Handler.deleteReplyInfo(replied_messageID);
+				return;
+			}
 					
-				const moduleData = command_obj.moduleData;
-				const commandData  = await Commands.getData( moduleData.id ) || { ID: moduleData.id, data: moduleData, cooldowns: {} };
+			const moduleData = command_obj.moduleData;
+			const commandData  = await Commands.getData( moduleData.id ) || { ID: moduleData.id, data: moduleData, cooldowns: {} };
 				
-				const Post = {}
-				Post.deleteReplyInfo = function ( messageID = replied_messageID ){
-					API.unsendMessage(messageID, (e) => {});
-					Handler.deleteReplyInfo(messageID);
-				};
+			const Post = {}
+			Post.deleteReplyInfo = function ( messageID = replied_messageID ){
+				API.unsendMessage(messageID, (e) => {});
+				Handler.deleteReplyInfo(messageID);
+			};
 				
-				Post.addUserCooldown = async function () {
-					if ((moduleData.cooldown || 0) !== 0 && !isBotOwner) {
-						commandData.cooldowns[senderID] = Date.now();
-						await Commands.setData(moduleData.id, commandData ).then((obj) => {
-							console.log(`Command ${moduleData.id} ${obj.signal} Data For User-${senderID}.`);
-						}).catch(console.error);
-					}
+			Post.addUserCooldown = async function () {
+				if ((moduleData.cooldown || 0) !== 0 && !isBotOwner) {
+					commandData.cooldowns[senderID] = Date.now();
+					await Commands.setData(moduleData.id, commandData ).then((obj) => {
+						console.log(`Command ${moduleData.id} ${obj.signal} Data For User-${senderID}.`);
+					}).catch(console.error);
 				}
-				Post.invalid_reply_usage = function () {
-					Message.reply(
-						Utils.textFormat('commands', 'cmdInvalidReplySyntax', command_obj.moduleData.replyUsage || ''),
-						Utils.autoUnsend,
-					);
-				}
-				
-				/// Prepare to execute command
-				const Inputs = { event, API, CLIENT, BOT_INFO, Utils, Message, Post, Bans, Users, Threads, Commands, Logger };
-				Inputs.ModuleData = command_obj.moduleData;
-				Inputs.replyInfo = replyInfo;
-				Inputs.prefixUsed = prefix_used;
+			}
+			Post.invalid_reply_usage = function () {
+				Message.reply(
+					Utils.textFormat('commands', 'cmdInvalidReplySyntax', command_obj.moduleData.replyUsage || ''),
+					Utils.autoUnsend,
+				);
+			}
+			// Update Inputs
+			Inputs.ModuleData = command_obj.moduleData;
+			Inputs.replyInfo = replyInfo;
+			Inputs.prefixUsed = prefix_used;
 
-				try {
-					const moduleScript = require(command_obj.moduleScriptPath);
-					if (moduleScript.handleReply && typeof(moduleScript.handleReply) === 'function') {
-						if (moduleScript.handleReply.constructor.name === 'AsyncFunction') {
-							await moduleScript.handleReply(Inputs);
-						} else {
-							moduleScript.handleReply(Inputs);
-						}
+			const moduleScript = require(command_obj.moduleScriptPath);
+
+			try {
+				if (moduleScript.handleReply && typeof(moduleScript.handleReply) === 'function') {
+					if (moduleScript.handleReply.constructor.name === 'AsyncFunction') {
+						await moduleScript.handleReply(Inputs);
+					} else {
+						moduleScript.handleReply(Inputs);
 					}
-				} catch (err) {
-					console.error(err);
 				}
 			} catch (err) {
+				Logger.makeLog(CLIENT.LOG_PATH, `Command-Reply ${replyInfo.commandID} ERROR: ${err}.`, 'error');
 				console.error(err);
 			}
 		}

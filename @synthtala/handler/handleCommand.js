@@ -98,7 +98,7 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 			
 		// Get Command Script:
 		let commandTargetID = (MODULES.cmd_aliases[commandTyped]) ? MODULES.cmd_aliases[commandTyped] : (MODULES.cmd_names[commandTyped]) ? MODULES.cmd_names[commandTyped] : false;
-			
+		
 		// Command not found
 		if (!commandTargetID) {
 			Message.react('question');
@@ -111,6 +111,8 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 			*/
 			return;
 		}
+		
+		Logger.makeLog(CLIENT.LOG_PATH, `Command ${commandTargetID} was called by user-${senderID} from thread-${threadID}.`, 'module');
 			
 		const time_initiated = Date.now();
 		const absoluteUserArgInput = userWholeInput.slice(commandTyped.length).trim();
@@ -217,10 +219,10 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 			if ((moduleData.cooldown || 0) !== 0 && !isBotOwner) {
 				commandData.cooldowns[senderID] = Date.now();
 				await Commands.setData(moduleData.id, commandData ).then((obj) => {
-					Logger(`Command ${commandTargetID} ${obj.signal} Data For User-${senderID}.`, 'module');
+					Logger.makeLog(CLIENT.LOG_PATH, `Command ${commandTargetID} ${obj.signal} Data For User-${senderID}.`, 'module');
 				}).catch((err) => {
-					console.error(err);
 					Logger.makeLog(CLIENT.LOG_PATH, err, 'module');
+					console.error(err);
 				});
 			}
 		}
@@ -259,8 +261,8 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 			}
 			return;
 		} catch (err) {
+			Logger.makeLog(CLIENT.LOG_PATH, `Command ${commandTargetID} ERROR: ${err}`, 'module');
 			console.error(err);
-			Logger.makeLog(CLIENT.LOG_PATH, err, 'module');
 		}
 	}
 	

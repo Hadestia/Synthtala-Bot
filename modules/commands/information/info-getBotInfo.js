@@ -11,7 +11,7 @@ module.exports.run = async function ({ args, event, API, BOT_INFO, CLIENT, MODUL
 	
 	// Runtime
 	const runtime = process.uptime() - BOT_INFO.STARTTIME;
-	const formattedRuntime = formatRuntime(runtime);
+	const formattedRuntime = Utils.formatRuntime(runtime);
 	
 	// Memory
 	const memoryUsage = Utils.getProcessMemoryUsage(process);
@@ -26,7 +26,6 @@ module.exports.run = async function ({ args, event, API, BOT_INFO, CLIENT, MODUL
 	// Modules
 	const totalModules = Object.keys(MODULES.commands).length;
 	const totalEvents = Object.keys(MODULES.events).length;
-	
 	const onDB = CLIENT.CONFIG.database;
 	
 	let owner_list = '';
@@ -48,7 +47,7 @@ module.exports.run = async function ({ args, event, API, BOT_INFO, CLIENT, MODUL
 		BOT_INFO.FULLNAME,
 		BOT_INFO.ID,
 		totalEvents,
-		totalModules
+		totalModules,
 		((onDB) ? allUsers.length : '<database offline>'),
 		((onDB) ? allGroups.length : '<database offline>'),
 		formattedRuntime,
@@ -98,11 +97,4 @@ function getMemory() {
 		usedMem: formatBytes(usedMemory),
 		availableStorage: formatBytes(totalMemory - usedMemory)
 	};
-}
-
-function formatRuntime(runtime) {
-	const hrs = Math.floor(runtime / 3600);
-	const mins = Math.floor((runtime % 3600) / 60);
-	const secs = Math.floor(runtime % 60);
-	return `${hrs.toString().padStart(2, '0')} : ${mins.toString().padStart(2, '0')} : ${secs.toString().padStart(2, '0')}`;
 }

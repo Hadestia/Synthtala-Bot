@@ -132,6 +132,13 @@ module.exports.getDirFiles = function (path, filterFunc) {
 	}
 }
 
+module.exports.formatRuntime = function (runtime) {
+	const hrs = Math.floor(runtime / 3600);
+	const mins = Math.floor((runtime % 3600) / 60);
+	const secs = Math.floor(runtime % 60);
+	return `${hrs.toString().padStart(2, '0')} : ${mins.toString().padStart(2, '0')} : ${secs.toString().padStart(2, '0')}`;
+}
+
 module.exports.formatBytes = function (bytes) {
 	if (bytes < 1024) return `${bytes} bytes`;
 	const units = ['KB', 'MB', 'GB', 'TB'];
@@ -167,19 +174,15 @@ module.exports.INTERNAL = async function ({ API, BOT_INFO, CLIENT, Users, Banned
 	
 	/// CONSTANTS...
 	Utils.TEXT_FORMAT_REF = textFormatter;
-	/*
-	Utils.BOT_ID = API.getCurrentUserID();
-	Utils.BOT_NAME = CLIENT.CONFIG.BOTNAME;
-	Utils.BOT_FULLNAME = await Users.getNameUser(Utils.BOT_ID);
-	Utils.BOT_IS_UPDATED = isUpdated == 'true';
-	*/
 	
 	// FUNCTIONS...
 	Utils.getProcessMemoryUsage = this.getProcessMemoryUsage;
 	Utils.cleanAnilistHTML = this.cleanAnilistHTML;
 	Utils.removeNonASCII = this.removeNonASCII;
+	Utils.formatRuntime = this.formatRuntime;
 	Utils.downloadFile = this.downloadFile;
 	Utils.randomString = this.randomString;
+	Utils.formatBytes = this.formatBytes;
 	Utils.isValidURL = this.isValidURL;
 	Utils.homeDir = this.homeDir;
 	Utils.AES = this.AES;
