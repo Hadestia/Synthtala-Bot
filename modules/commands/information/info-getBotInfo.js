@@ -85,10 +85,13 @@ function getMemory() {
 	const usedMemory = totalMemory - freeMemory;
 	
 	function formatBytes(bytes) {
-		if (bytes < 1024) return `${bytes} bytes`;
-		const units = ['KB', 'MB', 'GB', 'TB'];
-		const index = Math.floor(Math.log(bytes) / Math.log(1024));
-		return `${(bytes/Math.pow(1024, index)).toFixed(2)} ${units[index]}`;
+		const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+		let index = 0;
+		while (bytes >= 1024 && index < units.length - 1) {
+			bytes /= 1024;
+			index++;
+		}
+		return `${bytes.toFixed(2)} ${units[index]}`;
 	}
 	
 	return {
