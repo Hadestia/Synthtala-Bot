@@ -22,9 +22,6 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 		
 		if (!messageReply) return;
 		
-		// Cache Inputs
-		const Inputs = { event, API, CLIENT, BOT_INFO, Utils, Message, Post, Bans, Users, Threads, Commands, Logger };
-		
 		// console.dir('messageReply:', messageReply);
 		const groupData = await Threads.getData(threadID);
 		const groupSettings = (groupData) ? groupData.settings : {};
@@ -86,8 +83,10 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 					Utils.autoUnsend,
 				);
 			}
-			// Update Inputs
+			// Cache Inputs
+			const Inputs = { event, API, CLIENT, BOT_INFO, Utils, Message, Bans, Users, Threads, Commands, Logger };
 			Inputs.ModuleData = command_obj.moduleData;
+			Inputs.Post = Post;
 			Inputs.replyInfo = replyInfo;
 			Inputs.prefixUsed = prefix_used;
 

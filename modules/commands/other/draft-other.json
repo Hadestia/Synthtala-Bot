@@ -11,7 +11,7 @@
             "unsend",
             "unsent"
         ],
-        "usage": "[@reply]",
+        "usage": "[@reply/@react]",
         "description": "Unsend, Remove or Delete a message by simply replying this to the target message or by reacting \"❌\" emoji on it. Remember that messages made by this bot can only be removed.",
         "cooldown": 0,
         "category": "other",
@@ -24,10 +24,10 @@
         "placeholders": {
             "expectedReaction": "❌"
         },
-        "handleEvent": {
-            "message_reply": true,
-            "message_reaction": true
-        }
+        "handleEvent": [
+            "message_reply",
+            "message_reaction"
+        ]
     },
     {
         "id": "$cmd-ping",

@@ -317,6 +317,44 @@ async function updateModules ( path, oldModules, addition ) {
 	return newLoaded;
 }
 
+async function loginAgents() {
+	// Login Agents
+	let credentials = Util.getDirFiles(
+		CLIENT.APPSTATE_PATH,
+		function (file) {
+			return !(file.startsWith('_') && file.startsWith('.')) && file.endsWith('.json');
+		}
+	);
+	
+	if (process.env.MAIN_APPSTATE) {
+		await newSession(process.env.MAIN_APPSTATE, '<>', '<ENV>').then((data) => {}).catch((err) => {
+			Logger.makeLog(CLIENT.LOG_PATH, `ENV APPSTATE » Error while starting new session`, 'error');
+			Logger.makeLog(CLIENT.LOG_PATH, err, 'error');
+		});
+	}
+	
+	for (const candidate of credentials) {
+		const candidatePath = Path.join(CLIENT.APPSTATE_PATH, candidate);
+		const appState = require(candidatePath);
+		if (!appState) {
+			Logger.makeLog(CLIENT.LOG_PATH, `Appstate "${candidate}" was not a valid JSON Object. Deleting file...`, 'warn');
+			Filesystem.unlinkSync(candidatePath);
+			Logger.makeLog(CLIENT.LOG_PATH, `File "${candidate}" was deleted!`, 'warn');
+		} else {
+			// Parse appstate and create Session
+			const appstate = JSON.stringify(appState);
+			await newSession(appstate, candidatePath, candidate, false).then((data) => {}).catch((err) => {
+				Logger.makeLog(CLIENT.LOG_PATH, `${candidate} » Error While Starting New Session`, 'error');
+				Logger.makeLog(CLIENT.LOG_PATH, err, 'error');
+			});
+		}
+	}
+	
+	if (credentials.length == 0 && !process.env.MAIN_APPSTATE) {
+		Logger.makeLog(CLIENT.LOG_PATH, `There's no credentials found to login.`, '--');
+	}
+}
+
 // ────────────────────────────── # Starter ──────────────────────────────
 
 async function startServer() {
@@ -397,41 +435,7 @@ async function startServer() {
 		}
 	);
 	
-	// Login Agents
-	let credentials = Util.getDirFiles(
-		CLIENT.APPSTATE_PATH,
-		function (file) {
-			return !(file.startsWith('_') && file.startsWith('.')) && file.endsWith('.json');
-		}
-	);
-	
-	if (process.env.MAIN_APPSTATE) {
-		await newSession(process.env.MAIN_APPSTATE, '<>', '<ENV>').then((data) => {}).catch((err) => {
-			Logger.makeLog(CLIENT.LOG_PATH, `ENV APPSTATE » Error while starting new session`, 'error');
-			Logger.makeLog(CLIENT.LOG_PATH, err, 'error');
-		});
-	}
-	
-	for (const candidate of credentials) {
-		const candidatePath = Path.join(CLIENT.APPSTATE_PATH, candidate);
-		const appState = require(candidatePath);
-		if (!appState) {
-			Logger.makeLog(CLIENT.LOG_PATH, `Appstate "${candidate}" was not a valid JSON Object. Deleting file...`, 'warn');
-			Filesystem.unlinkSync(candidatePath);
-			Logger.makeLog(CLIENT.LOG_PATH, `File "${candidate}" was deleted!`, 'warn');
-		} else {
-			// Parse appstate and create Session
-			const appstate = JSON.stringify(appState);
-			await newSession(appstate, candidatePath, candidate, false).then((data) => {}).catch((err) => {
-				Logger.makeLog(CLIENT.LOG_PATH, `${candidate} » Error While Starting New Session`, 'error');
-				Logger.makeLog(CLIENT.LOG_PATH, err, 'error');
-			});
-		}
-	}
-	
-	if (credentials.length == 0 && !process.env.MAIN_APPSTATE) {
-		Logger.makeLog(CLIENT.LOG_PATH, `There's no credentials found to login.`, '--');
-	}
+	await loginAgents();
 	
 	// KEEP THE SERVER BUSY
 	setInterval(async () => {

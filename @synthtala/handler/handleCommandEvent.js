@@ -1,5 +1,4 @@
 const Filesystem = require('fs-extra');
-const Path = require('path');
 
 module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, Utils, Logger }) {
 	
@@ -36,19 +35,19 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 			const command_obj = MODULES.commands[cmd_id];
 			const moduleData = command_obj.moduleData;
 				
-			// Update Inputs
-			Inputs.ModuleData = moduleData;
-			Inputs.CharacterAI = CharacterAI;
-			Inputs.HandleCommandReply = HandleCommandReply
-
-			const moduleScript = require(command_obj.moduleScriptPath);
-			
-			try {
-				if (moduleScript.handleEvent && typeof(moduleScript.handleEvent) === 'function') {
-					if (moduleData.handleEvent) {
-						for (const type in moduleData.handleEvent) {
-							if (moduleData.handleEvent[type] && event.type === type) {
-								//console.log('CMD EVENT CALL:', cmd_id, 'For Thread: ', threadID);
+			// Loop through defined types
+			if (moduleData.handleEvent) { // @Type Array[]
+				for (const definedType of moduleData.handleEvent) {
+					if (event.type === definedType) {
+						// Update Inputs
+						Inputs.ModuleData = moduleData;
+						Inputs.CharacterAI = CharacterAI;
+						Inputs.HandleCommandReply = HandleCommandReply;
+					
+						const moduleScript = require(command_obj.moduleScriptPath);
+					
+						try {
+							if (moduleScript.handleEvent && typeof(moduleScript.handleEvent) === 'function') {
 								Logger.makeLog(CLIENT.LOG_PATH, `Command-Event ${cmd_id} was called at thread-${threadID}.`, 'module');
 								if (moduleScript.handleEvent.constructor.name === 'AsyncFunction') {
 									await moduleScript.handleEvent(Inputs);
@@ -56,12 +55,12 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 									moduleScript.handleEvent(Inputs);
 								}
 							}
+						} catch (err) {
+							Logger.makeLog(CLIENT.LOG_PATH, `Command-Event ${cmd_id} ERROR: ${err}`, 'error');
+							console.error(err);
 						}
 					}
 				}
-			} catch (err) {
-				Logger.makeLog(CLIENT.LOG_PATH, `Command-Event ${cmd_id} ERROR: ${err}`, 'error');
-				console.error(err);
 			}
 		}
 	}
