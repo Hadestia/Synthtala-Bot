@@ -2,9 +2,9 @@
     "name": "Synthtala",
     "version": "1.0.0",
     "description": "Nasmerah is a Facebook Messenger bot designed to assist students with various features, including AI-powered responses, file searches, music and video searches, and more. The bot is built using unofficial Facebook API library and integrates with APIs to provide a wide range of capabilities.",
-    "main": "app.js",
+    "main": "index.js",
     "scripts": {
-        "start": "node app.js"
+        "start": "node index.js"
     },
     "keywords": [
         "AI",
