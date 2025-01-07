@@ -56,7 +56,7 @@ function start( input ) {
 				resolved( { ERROR: true, PATH: APPSTATE_PATH, API } );
 			}
 			
-			resolved({ ID, API, PATH });
+			resolved({ input.ID, API, PATH });
 		});
 	});
 
