@@ -89,10 +89,12 @@
         "type": "commands",
         "version": "1.0.1",
         "permission": 0,
-        "disabled": false,
+        "disabled": true,
         "author": "Hadestia | Package by Mohammed Nayan",
         "name": "tiktok-dl",
-        "aliases": [ "tikdl" ],
+        "aliases": [
+            "tikdl"
+        ],
         "usage": "<video-link>",
         "description": "Download tiktok video provided by a video link.",
         "cooldown": 60,
@@ -105,7 +107,7 @@
         "dependencies": {
             "fs-extra": "",
             "axios": "",
-            "nayan-media-downloader" : ""
+            "nayan-media-downloader": ""
         }
     },
     {
@@ -113,10 +115,13 @@
         "type": "commands",
         "version": "1.0.1",
         "permission": 0,
-        "disabled": false,
+        "disabled": true,
         "author": "Hadestia | Package by Mohammed Nayan",
         "name": "fb-insta-dl",
-        "aliases": [ "fbdl", "instadl" ],
+        "aliases": [
+            "fbdl",
+            "instadl"
+        ],
         "usage": "<option> <URL>",
         "description": "Download Facebook video or Instagram Image/Reel provided by a video link.\n\n𝗢𝗽𝘁𝗶𝗼𝗻𝘀\n`-i` - For Image Download.\n`-v' - For Video Download.",
         "cooldown": 60,
@@ -129,7 +134,7 @@
         "dependencies": {
             "fs-extra": "",
             "axios": "",
-            "nayan-media-downloader" : ""
+            "nayan-media-downloader": ""
         }
     }
 ]
