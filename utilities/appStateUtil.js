@@ -30,14 +30,14 @@ function returnAndSaveAppstate (id, credentialObj, CLIENT) {
 
 async function getAppState(loginCredential, CLIENT) {
 	
-	const getFbState = require(Path.join(CLIENT.ROOT_PATH, 'utilities', 'getFbstate.js');
+	const getFbState = require(Path.join(CLIENT.ROOT_PATH, 'utilities', 'getFbstate.js'));
 	const { email, password, userAgent, proxy } = loginCredential;
 	let appstate, code2FATemp;
 	
 	try {
 		appstate = await getFbState(email.trim(), password.trim(), userAgent, proxy);
 	} catch (err) {
-		const loginMbasic = require(Path.join(CLIENT.ROOT_PATH, 'utilities', 'loginMbasic.js');
+		const loginMbasic = require(Path.join(CLIENT.ROOT_PATH, 'utilities', 'loginMbasic.js'));
 		appstate = await loginMbasic({
 			email,
 			pass: password, 
