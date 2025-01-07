@@ -331,7 +331,6 @@ async function loginAgents() {
 		}
 	);
 	
-	/*
 	if (process.env.MAIN_APPSTATE) {
 		const credentialObj = {
 			appstate = JSON.parse(process.env.MAIN_APPSTATE);
@@ -341,8 +340,8 @@ async function loginAgents() {
 			Logger.makeLog(CLIENT.LOG_PATH, err, 'error');
 		});
 	}
-	*/
 	
+	/*
 	for (const candidate of credentials) {
 		const candidatePath = Path.join(CLIENT.APPSTATE_PATH, candidate);
 		const credentialObj = require(candidatePath);
@@ -363,6 +362,7 @@ async function loginAgents() {
 	if (credentials.length == 0) { // && !process.env.MAIN_APPSTATE) {
 		Logger.makeLog(CLIENT.LOG_PATH, `There's no credentials found to login.`, '--');
 	}
+	*/
 }
 
 // ────────────────────────────── # Starter ──────────────────────────────
