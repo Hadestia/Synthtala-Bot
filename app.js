@@ -41,7 +41,7 @@ const CLIENT = {
 	
 	CONFIG: Filesystem.readJsonSync('./configuration.json'),
 	
-	CONFIG_PATH: Path.join(process.cwd(), 'json', 'bot_configuration.json'),
+	CONFIG_PATH: Path.join(process.cwd(), 'json', 'configuration.json'),
 	
 	COMMAND_CATEGORY_REF: Filesystem.readJsonSync('./json/ref-commandCategories.json'),
 	
