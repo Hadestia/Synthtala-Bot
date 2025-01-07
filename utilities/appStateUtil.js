@@ -67,8 +67,8 @@ module.exports.parse = function ( credentialObj, path, CLIENT ) {
 		}
 	
 		try {
-			if (!Array.isArray(credentialObj) || credentialObj.some(obj => typeof obj !== 'object')) {
-				return reject(error('expected array of OBJECTS[] but got different value!!'));
+			if (credentialObj.some(obj => typeof obj !== 'object')) {
+				return reject(error(`${path} expect OBJECTS[] but got different value!`));
 			}
 		} catch (err) {
 			return reject(error('this is not a valid JSON!!'));
