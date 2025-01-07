@@ -113,11 +113,11 @@ function start( input ) {
 			
 			const BOT_INFO = {}
 			const bot_info = await Users.getInfo(String(LoginData.ID));
-			BOT_INFO.ID = bot_info.id || LoginData.ID;
+			BOT_INFO.ID = LoginData.ID;
 			BOT_INFO.URL = `facebook.com/${BOT_INFO.USERNAME}`;
 			BOT_INFO.NAME = bot_info.first_name;
 			BOT_INFO.FULLNAME = bot_info.name;
-			BOT_INFO.USERNAME = bot_info.username || bot_info.id;
+			BOT_INFO.USERNAME = bot_info.username || LoginData.ID;
 			BOT_INFO.AVATAR_LINK = bot_info.avatar;
 			BOT_INFO.DATABASE_NAME = database;
 			BOT_INFO.APPSTATE_NAME = APPSTATE_FILENAME;
