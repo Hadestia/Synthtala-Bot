@@ -57,7 +57,7 @@ function start( input ) {
 			}
 			
 			const ID = input.ID;
-			resolved({ ID, API, PATH });
+			resolved({ ID, API });
 		});
 	});
 
@@ -68,10 +68,10 @@ function start( input ) {
 			/* 
 			const regExp = new RegExp('^\!.*?\.json$'); // Exclude appstate that has this (!) symbol on the beginning
 			/// Delete this appstate
-			if (!regExp.test(LoginData.PATH)) {
-				if (LoginData.PATH !== '' && APPSTATE_FILENAME !== '<ENV>') {
-					Logger.makeLog(CLIENT.LOG_PATH, `Deleting ${LoginData.PATH} ...`, 'warn');
-					Filesystem.unlinkSync(LoginData.PATH);
+			if (!regExp.test(APPSTATE_PATH)) {
+				if (APPSTATE_PATH !== '' && APPSTATE_FILENAME !== '<ENV>') {
+					Logger.makeLog(CLIENT.LOG_PATH, `Deleting ${APPSTATE_PATH} ...`, 'warn');
+					Filesystem.unlinkSync(APPSTATE_PATH);
 					Logger.makeLog(CLIENT.LOG_PATH, `Appstate was deleted!!`, 'warn');
 				}
 			}
