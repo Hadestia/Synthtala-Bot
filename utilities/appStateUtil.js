@@ -66,18 +66,14 @@ module.exports.parse = function ( credentialObj, path, CLIENT ) {
 			return reject(error(`expected Object{} but got ${varType}.`));
 		}
 	
-		try {
-			if (credentialObj.some(obj => typeof obj !== 'object')) {
-				return reject(error(`${path} expect OBJECTS[] but got different value!`));
-			}
-		} catch (err) {
-			return reject(error('this is not a valid JSON!!'));
-		}
-		
 		// If appstate is already provided
 		if (credentialObj.appstate) {
 			
 			let appstate = credentialObj.appstate;
+			
+			if (!appstate.some(obj => typeof(obj) == 'object')) {
+				return reject(error(`${path} expect OBJECTS[] but got different value!`));
+			}
 			
 			if (appstate.some(i => i.name)) {
 				// fix invalid "key" keys
