@@ -1,7 +1,7 @@
 const Moment = require('moment-timezone');
 const Filesystem = require('fs-extra');
 const Chalk = require('chalk');
-const config = Filesystem.readJsonSync(__dirname + '/../json/bot_configuration.json');
+const config = Filesystem.readJsonSync(__dirname + '/../json/configuration.json');
 
 function log(name, content, color, colorContent) {
 	const formatName = `[ ${name} ]⟩ `;
