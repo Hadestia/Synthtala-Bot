@@ -139,7 +139,6 @@ module.exports = async function (object, fileName, path, folderPath) {
 				}).catch((error) => {
 					
 					errorMessages = `${fileName} Draft(${object.id}): Unable to download script from link (${object.script}). Rejecting process with error:\n ${error}\n`;
-					Logger.makeLog(global.NASMERAH_BOT.LOG_PATH, errorMessages);
 					
 				});
 				
@@ -176,7 +175,6 @@ module.exports = async function (object, fileName, path, folderPath) {
 				}).catch((error) => {
 					
 					errorMessages = `${fileName} Draft(${object.id}): Unable to download script from link (${object.script}). Rejecting process with error:\n ${error}\n`;
-					Logger.makeLog(global.NASMERAH_BOT.LOG_PATH, errorMessages);
 					
 				});
 				
@@ -201,7 +199,6 @@ module.exports = async function (object, fileName, path, folderPath) {
 	
 	if (!fileExist) {
 		errorMessages += `${fileName} Draft(${object.id}) Unable to find script ${object.script}!`;
-		Logger.makeLog(global.NASMERAH_BOT.LOG_PATH, errorMessages);
 		returnable.error = errorMessages;
 		return returnable;
 	}
