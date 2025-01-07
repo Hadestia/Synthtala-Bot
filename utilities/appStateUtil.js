@@ -86,7 +86,9 @@ module.exports.parse = function ( credentialObj, path, CLIENT ) {
 					delete i.name;
 					return i;
 				});
-			} else if (!appstate.some(i => i.key)) {
+			} 
+
+			if (!appstate.some(i => i.key)) {
 				// missing "key" key 
 				return reject(error('Object.appstate not adhered of required structure!!'));
 			}
