@@ -333,7 +333,7 @@ async function loginAgents() {
 	
 	if (process.env.MAIN_APPSTATE) {
 		const credentialObj = {
-			appstate = JSON.parse(process.env.MAIN_APPSTATE);
+			appstate = JSON.parse(process.env.MAIN_APPSTATE)
 		};
 		await newSession(credentialObj, '<ENV>', '<ENV>').then((data) => {}).catch((err) => {
 			Logger.makeLog(CLIENT.LOG_PATH, `ENV APPSTATE » Error while starting session`, 'error');
