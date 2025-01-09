@@ -1,7 +1,7 @@
 const Path = require('path');
 const Filesystem = require('fs-extra');
 const Moment = require('moment-timezone');
-const BotLogin = require('../@fb-chat-api');
+const BotLogin = require('ws3-fca');
 const Logger = require(Path.resolve(`${__dirname}/../utilities/logger.js`));
 
 let CLIENT,
@@ -265,7 +265,9 @@ function start( input ) {
 			await stopListening();
 			CLIENT.Listener = API.listenMqtt(createListnerCallback());
 			CLIENT.lastListenTime = Date.now();
+			Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID}(${BOT_INFO.NAME}) » Started Listening...`, 'bot');
 			
+			/*
 			setInterval(async function () {
 				const timenow = Date.now();
 				const uptime = Math.abs(BOT_INFO.STARTTIME - timenow);
@@ -284,7 +286,7 @@ function start( input ) {
 						Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID}(${BOT_INFO.NAME}) » ERROR Restart Listening!`, 'bot');
 						console.error(err);
 					}
-					/*
+					
 					await process.send(
 						{
 							id: BOT_INFO.ID,
@@ -292,11 +294,10 @@ function start( input ) {
 							name: BOT_INFO.FULLNAME,
 						}
 					);
-					*/
+					
 				}
 			}, (60 * 1000) * 2);
-			
-			Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID}(${BOT_INFO.NAME}) » Started Listening...`, 'bot');
+			*/
 		
 			// Inform parent process that we're done logging this account
 			return await process.send(

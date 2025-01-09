@@ -4,7 +4,6 @@ const Path = require('path');
 module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, Utils, Logger }) {
 	
 	const moment = require('moment-timezone');
-	const stringSimilarity = require('string-similarity');
 	
 
 	const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
