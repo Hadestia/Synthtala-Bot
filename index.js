@@ -59,7 +59,6 @@ const restartService = function () {
 		try {
 			await Object.keys(CLIENT.AGENTS).forEach((bot_id) => {
 				const session = CLIENT.AGENTS[bot_id].process;
-				session.exit(0);
 				delete CLIENT.AGENTS[bot_id];
 			});
 			loginAgents();

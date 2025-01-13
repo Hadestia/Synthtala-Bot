@@ -104,17 +104,17 @@ function start( input ) {
 		const get_db_models = require('./database/db_models.js');
 		await get_db_models({ sequelize, Sequelize }).then(async (Models) => {
 			
-			Logger.makeLog(CLIENT.LOG_PATH, `Bot-${LoginData.ID} » Database Models Initialized!, Processing pre-listening procedure...`, 'database');
-			Logger.makeLog(CLIENT.LOG_PATH, `Bot-${LoginData.ID} » Fetching Bot Information & Utilities...`, 'bot');
+			Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_ID} » Database Models Initialized!, Processing pre-listening procedure...`, 'database');
+			Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_ID} » Fetching Bot Information & Utilities...`, 'bot');
 
 			const textFormat = Filesystem.readJsonSync(Path.join(CLIENT.ROOT_PATH, 'json', 'ref-textFormat.json'));
 			const { Bans, Users, Threads, Commands } = getDBControllers({ API, textFormat, Models });
 			
 			/// EXTENDING BOT INFO
 			const BOT_INFO = {}
-			const bot_info = await Users.getInfo(String(BOT_ID));
+			const bot_info = await Users.getInfo(BOT_ID);
 			BOT_INFO.ID = BOT_ID;
-			BOT_INFO.URL = `facebook.com/${BOT_INFO.USERNAME}`;
+			BOT_INFO.URL = `facebook.com/${bot_info.username}`;
 			BOT_INFO.NAME = bot_info.first_name;
 			BOT_INFO.FULLNAME = bot_info.name;
 			BOT_INFO.USERNAME = bot_info.username || BOT_ID;
@@ -140,12 +140,6 @@ function start( input ) {
 			
 			/// DATABASE RECHECKING
 			await handler_Database.init({ API, CLIENT, BOT_INFO });
-			
-			API.markAsReadAll((err) => {
-				if (err) {
-					Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID}(${BOT_INFO.NAME}) » Unable to mark all messages as read on start up.`);
-				}
-			});
 			
 			/* INITIALIZE CHARACTER AI
 			Logger.makeLog(CLIENT.LOG_PATH, `Authenticating AI Characters...`, 'login');
@@ -314,7 +308,7 @@ function start( input ) {
 		}).catch(async (Model_Err) => {
 			
 			Logger(Model_Err, 'error');
-			Logger.makeLog(CLIENT.LOG_PATH, `Bot-${LoginData.ID} » Unable to create database model for this account, Exiting process...`, 'database');
+			Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_ID} » Unable to create database model for this account, Exiting process...`, 'database');
 			Logger.makeLog(CLIENT.LOG_PATH, Model_Err);
 			await saveAppState();
 			process.exit(0);
