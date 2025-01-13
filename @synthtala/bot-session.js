@@ -4,7 +4,8 @@ const Moment = require('moment-timezone');
 const BotLogin = require('ws3-fca');
 const Logger = require(Path.resolve(`${__dirname}/../utilities/logger.js`));
 
-let CLIENT,
+let BOT_ID,
+	CLIENT,
 	MODULES,
 	APPSTATE,
 	USER_AGENT,
@@ -32,6 +33,7 @@ process.on('message', function ( data ) {
 
 function start( input ) {
 	
+	BOT_ID = input.ID;
 	CLIENT = input.CLIENT;
 	MODULES = input.CLIENT.MODULES;
 	APPSTATE = input.APPSTATE;
@@ -56,8 +58,7 @@ function start( input ) {
 				resolved( { ERROR: true, PATH: APPSTATE_PATH, API } );
 			}
 			
-			const ID = input.ID;
-			resolved({ ID, API });
+			resolved({ API });
 		});
 	});
 
@@ -80,7 +81,7 @@ function start( input ) {
 		}
 		
 		/// Initialize Database
-		const database = `${LoginData.ID}.sqlite`;
+		const database = `${BOT_ID}.sqlite`;
 		const db_name = `${CLIENT.DATA_PATH}/database/datas/${database}`;
 		const { sequelize, Sequelize } = require('./database/db_auth.js')(db_name);
 		await sequelize.authenticate(); // opening database
@@ -95,7 +96,7 @@ function start( input ) {
 					Filesystem.writeJsonSync(APPSTATE_PATH, appstate, { spaces: '\t' });
 				}
 			} catch (err) {
-				return console.error(err);
+				console.error(err);
 			}
 		}
 		
@@ -104,21 +105,19 @@ function start( input ) {
 		await get_db_models({ sequelize, Sequelize }).then(async (Models) => {
 			
 			Logger.makeLog(CLIENT.LOG_PATH, `Bot-${LoginData.ID} » Database Models Initialized!, Processing pre-listening procedure...`, 'database');
-			Logger.makeLog(CLIENT.LOG_PATH, `Bot-${LoginData.ID} » Fetching Controllers...`, 'bot');
-			
+			Logger.makeLog(CLIENT.LOG_PATH, `Bot-${LoginData.ID} » Fetching Bot Information & Utilities...`, 'bot');
+
 			const textFormat = Filesystem.readJsonSync(Path.join(CLIENT.ROOT_PATH, 'json', 'ref-textFormat.json'));
 			const { Bans, Users, Threads, Commands } = getDBControllers({ API, textFormat, Models });
 			
 			/// EXTENDING BOT INFO
-			Logger.makeLog(CLIENT.LOG_PATH, `Bot-${LoginData.ID} » Fetching Bot Information & Utilities...`, 'bot');
-			
 			const BOT_INFO = {}
-			const bot_info = await Users.getInfo(String(LoginData.ID));
-			BOT_INFO.ID = LoginData.ID;
+			const bot_info = await Users.getInfo(String(BOT_ID));
+			BOT_INFO.ID = BOT_ID;
 			BOT_INFO.URL = `facebook.com/${BOT_INFO.USERNAME}`;
 			BOT_INFO.NAME = bot_info.first_name;
 			BOT_INFO.FULLNAME = bot_info.name;
-			BOT_INFO.USERNAME = bot_info.username || LoginData.ID;
+			BOT_INFO.USERNAME = bot_info.username || BOT_ID;
 			BOT_INFO.AVATAR_LINK = bot_info.avatar;
 			BOT_INFO.DATABASE_NAME = database;
 			BOT_INFO.APPSTATE_NAME = APPSTATE_FILENAME;
@@ -202,6 +201,7 @@ function start( input ) {
 					handleListenerError (listen_err, saveAppState, CLIENT, BOT_INFO);
 				} else {
 					
+					/*
 					if (event.type == 'message' && event.messageID) {
 						if (messageCache.includes(event.messageID)) {
 							Object.keys(callbackListenTime).slice(0, -1).forEach(key => {
@@ -215,7 +215,8 @@ function start( input ) {
 							}
 						}
 					}
-				
+					*/
+					
 					event.body = (event.body !== undefined) ? event.body : '';
 					
 					Inputs.Message = await Message({ event, API, Utils });
