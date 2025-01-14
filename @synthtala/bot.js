@@ -65,14 +65,12 @@ function start (input) {
 			// EXTEND BOT INFORMATION
 			const BOT_INFO = {};
 			const info = await Users.getInfo(GLOBAL.ID);
+			
+			await API.getUserInfo(GLOBAL.ID).then((result) => {
+				console.log(result);
+			});
+			
 			BOT_INFO.ID = GLOBAL.ID;
-			if (info) {
-				BOT_INFO.URL = `facebook.com/${bot_info.username}`;
-				BOT_INFO.NAME = info.first_name;
-				BOT_INFO.FULLNAME = info.name;
-				BOT_INFO.USERNAME = info.username || BOT_ID;
-				BOT_INFO.AVATAR_LINK = info.avatar;
-			}
 			BOT_INFO.DATABASE_NAME = database;
 			BOT_INFO.APPSTATE_NAME = GLOBAL.APPSTATE_FILENAME;
 			BOT_INFO.STARTTIME = process.uptime();
@@ -123,7 +121,6 @@ function start (input) {
 				{
 					code: '-logged',
 					id: BOT_INFO.ID,
-					name: BOT_INFO.FULLNAME,
 					start_time: BOT_INFO.STARTTIME,
 					process_time: process.uptime() - BOT_INFO.STARTTIME
 				}

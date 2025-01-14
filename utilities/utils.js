@@ -163,7 +163,7 @@ module.exports.getProcessMemoryUsage = function (process) {
 
 /// INTERNAL UTILITY FUNCTIONS 
 
-module.exports.INTERNAL = async function ({ API, BOT_INFO, CLIENT, Users, Banned, Commands, Threads }) {
+module.exports.INTERNAL = async function ({ API, BOT_INFO, GLOBAL, Users, Banned, Commands, Threads }) {
 	
 	const Axios = require('axios');
 	
@@ -171,7 +171,7 @@ module.exports.INTERNAL = async function ({ API, BOT_INFO, CLIENT, Users, Banned
 	const fancyFont = require('./fancyFont.js');
 	
 	const textFormatter = require('../json/ref-textFormat.json');
-	const databaseReference = Filesystem.readJsonSync(`${CLIENT.ROOT_PATH}/json/ref-defaultDatabase.json`);
+	const databaseReference = Filesystem.readJsonSync(`${GLOBAL.CLIENT.ROOT_PATH}/json/ref-defaultDatabase.json`);
 
 	const Utils = {};
 	
@@ -195,7 +195,7 @@ module.exports.INTERNAL = async function ({ API, BOT_INFO, CLIENT, Users, Banned
 	//Utils.editGif = editGif;
 	
 	Utils.saveBotConfig = function (configObj) {
-		Filesystem.writeJsonSync(CLIENT.CONFIG_PATH, configObj, { spaces: '\t' });
+		Filesystem.writeJsonSync(GLOBAL.CLIENT.CONFIG_PATH, configObj, { spaces: '\t' });
 	}
 	
 	Utils.textFormat = function (category, key, ...values) {
@@ -228,9 +228,9 @@ module.exports.INTERNAL = async function ({ API, BOT_INFO, CLIENT, Users, Banned
 	Utils.setBotNickname = async function (prefix, custom, threadID) {
 		
 		const name = await Utils.fancyFont.get(custom || `${BOT_INFO.NAME.split(' ')[0]} Bot`, 1);
-		const nickname = CLIENT.CONFIG.defaultNicknameFormat
+		const nickname = GLOBAL.CLIENT.CONFIG.defaultNicknameFormat
 			.replace('{bot-name}', name)
-			.replace('{bot-prefix}', prefix || CLIENT.CONFIG.defaultPrefix);
+			.replace('{bot-prefix}', prefix || GLOBAL.CLIENT.CONFIG.defaultPrefix);
 			
 		API.changeNickname(nickname, threadID, BOT_INFO.ID);
 	}
@@ -239,7 +239,7 @@ module.exports.INTERNAL = async function ({ API, BOT_INFO, CLIENT, Users, Banned
 		Utils.setBotNickname(null, null, threadID);
 		if (welcome_msg) {
 			return API.sendMessage(
-				Utils.textFormat('events', 'botAddedToGroupIntro', BOT_INFO.NAME, CLIENT.CONFIG.defaultPrefix),
+				Utils.textFormat('events', 'botAddedToGroupIntro', BOT_INFO.NAME, GLOBAL.CLIENT.CONFIG.defaultPrefix),
 				threadID,
 				() => {}
 			);
@@ -256,8 +256,8 @@ module.exports.INTERNAL = async function ({ API, BOT_INFO, CLIENT, Users, Banned
 		const GroupData = await Threads.getData(event.threadID);
 		let groupInfo = (GroupData) ? GroupData.threadInfo : databaseReference.group_db.threadInfo;
 		
-		const isBotAdmin = CLIENT.CONFIG.botAdmins.includes(senderID);
-		const isBotOwner = CLIENT.CONFIG.botOwners.includes(senderID);
+		const isBotAdmin = GLOBAL.CLIENT.CONFIG.botAdmins.includes(senderID);
+		const isBotOwner = GLOBAL.CLIENT.CONFIG.botOwners.includes(senderID);
 		const isGroupAdmin = (event.isGroup) ? groupInfo.adminIDs.includes(senderID) : false;
 				
 		let isEligible = false
@@ -292,7 +292,7 @@ module.exports.INTERNAL = async function ({ API, BOT_INFO, CLIENT, Users, Banned
 			const data = await Threads.getData(event.threadID);
 			name = (data) ? data.threadInfo.threadName : 'Uninitialize Group';
 		}
-		for (const admin of CLIENT.CONFIG.botOwner) {
+		for (const admin of GLOBAL.CLIENT.CONFIG.botOwner) {
 			API.sendMessage(Utils.textFormat('events', 'eventModulesErrorToAdmin', filename, err, name || 'No Data', event.threadID, event.senderID), admin);
 		}
 	}
@@ -307,12 +307,12 @@ module.exports.INTERNAL = async function ({ API, BOT_INFO, CLIENT, Users, Banned
     	if (!module.language) return function () {};
        
         return function (...values) {
-        	if (!module.language.hasOwnProperty(CLIENT.CONFIG.language)) {
+        	if (!module.language.hasOwnProperty(GLOBAL.CLIENT.CONFIG.language)) {
         		const msg = Utils.textFormat('error', 'moduleNotFoundLanguage', module.name);
         		API.sendMessage(msg, event.threadID, ()=>{}, event.messageID);
 				return Utils.logModuleErrorToAdmin(msg, module.name, event);
             }
-			let lang = module.language[CLIENT.CONFIG.language][values[0]] || '';
+			let lang = module.language[GLOBAL.CLIENT.CONFIG.language][values[0]] || '';
             for (var i = values.length; i > 0x16c0 + -0x303 + -0x1f * 0xa3; i--) {
                 const expReg = RegExp('%' + i, 'g');
 				lang = lang.replace(expReg, values[i]);
@@ -411,13 +411,13 @@ module.exports.INTERNAL = async function ({ API, BOT_INFO, CLIENT, Users, Banned
 		return new Promise (async (resolved, reject) => {
 			await Axios.get(pictureLink, { responseType: 'arraybuffer' }).then(async (result) => {
 				try {
-					const picturePath = Path.join(CLIENT.CACHE_PATH, `${this.randomString(16)}.png`);
+					const picturePath = Path.join(GLOBAL.CLIENT.CACHE_PATH, `${this.randomString(16)}.png`);
 					Filesystem.writeFileSync(picturePath, Buffer.from(result.data, 'utf-8'));
 					
-					const music_panel = await canvas.loadImage(Path.join(CLIENT.CACHE_PATH, 'keep', 'thumb-musicPlayPanel.png'));
+					const music_panel = await canvas.loadImage(Path.join(GLOBAL.CLIENT.CACHE_PATH, 'keep', 'thumb-musicPlayPanel.png'));
 					// # fonts
-					canvas.registerFont(Path.join(CLIENT.CACHE_PATH, 'keep/fonts', 'YasashisaGothic.ttf'), { family: 'YG-reg' });
-					canvas.registerFont(Path.join(CLIENT.CACHE_PATH, 'keep/fonts', 'YasashisaGothicBold-V2.otf'), { family: 'YG-bold' });
+					canvas.registerFont(Path.join(GLOBAL.CLIENT.CACHE_PATH, 'keep/fonts', 'YasashisaGothic.ttf'), { family: 'YG-reg' });
+					canvas.registerFont(Path.join(GLOBAL.CLIENT.CACHE_PATH, 'keep/fonts', 'YasashisaGothicBold-V2.otf'), { family: 'YG-bold' });
 				
 					const main_canvas = canvas.createCanvas(music_panel.width, music_panel.height + 20);
 					const picture = await canvas.loadImage(picturePath);
@@ -435,7 +435,7 @@ module.exports.INTERNAL = async function ({ API, BOT_INFO, CLIENT, Users, Banned
 					ctx.font = '26px YG-reg';
 					ctx.fillText(author, 151, 105);
 					
-					const randomResultPath = resultPath || Path.join(CLIENT.CACHE_PATH, `musicPlayer-${this.randomString(16)}.png`);
+					const randomResultPath = resultPath || Path.join(GLOBAL.CLIENT.CACHE_PATH, `musicPlayer-${this.randomString(16)}.png`);
 					Filesystem.unlinkSync(picturePath);
 					Filesystem.writeFileSync(randomResultPath, main_canvas.toBuffer());
 					
