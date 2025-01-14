@@ -64,12 +64,6 @@ function start (input) {
 			
 			// EXTEND BOT INFORMATION
 			const BOT_INFO = {};
-			//const info = await Users.getInfo(GLOBAL.ID);
-			
-			await API.getUserInfo(GLOBAL.ID).then((result) => {
-				console.log(result);
-			});
-			
 			BOT_INFO.ID = GLOBAL.ID;
 			BOT_INFO.DATABASE_NAME = database;
 			BOT_INFO.APPSTATE_NAME = GLOBAL.APPSTATE_FILENAME;
@@ -78,7 +72,6 @@ function start (input) {
 			/// UTILITY FUNCTIONALITIES
 			const Utils = await (require('../utilities/utils.js')).INTERNAL({ GLOBAL, API, BOT_INFO, Bans, Users, Threads, Commands });
 			const Message = require('./messageHelper.js');
-			
 			
 			/// FETCH HANDLERS
 			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${GLOBAL.ID} » Preparing Handlers...`, 'bot');
