@@ -64,7 +64,7 @@ function start (input) {
 			
 			// EXTEND BOT INFORMATION
 			const BOT_INFO = {};
-			const info = await Users.getInfo(GLOBAL.ID);
+			//const info = await Users.getInfo(GLOBAL.ID);
 			
 			await API.getUserInfo(GLOBAL.ID).then((result) => {
 				console.log(result);
