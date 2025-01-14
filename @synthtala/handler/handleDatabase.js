@@ -225,7 +225,6 @@ module.exports = function ({ GLOBAL, BOT_INFO, Bans, Users, Threads, Utils, Logg
 	
 	Handler.init = async function ({ API }) {
 		
-		Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID}(${BOT_INFO.NAME}) » Checking Databases.`, 'bot');
 		let allUsers = await Users.getAll([ 'USERID', 'name', 'experience', 'banned', 'data' ]);
 		let allThreads = await Threads.getAll([ 'THREADID', 'threadInfo', 'banned', 'inventory', 'economy', 'settings', 'data', 'afk' ]);
 		

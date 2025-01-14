@@ -85,29 +85,13 @@ function start (input) {
 			const handler_CommandReaction = require('./handler/handleCommandReaction.js')(handler_inputs);
 			
 			/// DATABASE RECHECKING
+			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » Checking Databases.`, 'bot');
 			await handler_Database.init({ API });
 			
 			/// PREPARE INITIAL INPUTS
-			const Inputs = { API, MODULES };
+			const Inputs = { API };
 			Inputs.CLIENT = GLOBAL.CLIENT;
-			
-			/// NOTIFY MAIN GROUP CHATS
-			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » Notifying Groups.`, 'bot');
-			const notifiedID = {};
-			
-			const time = Moment().tz('Asia/Manila').format('MMMM DD, YYYY • HH:mm');
-			for (const id of GLOBAL.CLIENT.CONFIG.mainGroups) {
-				if (!notifiedID[id]) {
-					API.sendMessage(
-						{
-							body: Utils.textFormat('system', 'startUpNotif', time),
-						},
-						id,
-						(err) => {}	
-					);
-					notifiedID[id] = true;
-				}
-			}
+			Inputs.MODULES = GLOBAL.MODULES;
 			
 			// Inform parent process that we're done logging this account
 			await process.send(
@@ -118,6 +102,12 @@ function start (input) {
 					process_time: process.uptime() - BOT_INFO.STARTTIME
 				}
 			);
+			
+			API.listenMqtt(async (err, event) => {
+				if (event.type == 'message') {
+					API.sendMessage(event.body, event.threadID);
+				}
+			});
 
 		}).catch(async (modelError) => {
 			

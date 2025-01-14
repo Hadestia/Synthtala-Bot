@@ -265,7 +265,6 @@ async function newSession ( appstate, appStatePath, fileName, restart) {
 					childData.start_time = data.start_time;
 					
 					CLIENT.AGENTS[data.id] = childData;
-					
 					resolve(data);
 					break;
 				
