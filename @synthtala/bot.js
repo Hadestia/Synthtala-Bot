@@ -66,11 +66,13 @@ function start (input) {
 			const BOT_INFO = {};
 			const info = await Users.getInfo(GLOBAL.ID);
 			BOT_INFO.ID = GLOBAL.ID;
-			BOT_INFO.URL = `facebook.com/${bot_info.username}`;
-			BOT_INFO.NAME = info.first_name;
-			BOT_INFO.FULLNAME = info.name;
-			BOT_INFO.USERNAME = info.username || BOT_ID;
-			BOT_INFO.AVATAR_LINK = info.avatar;
+			if (info) {
+				BOT_INFO.URL = `facebook.com/${bot_info.username}`;
+				BOT_INFO.NAME = info.first_name;
+				BOT_INFO.FULLNAME = info.name;
+				BOT_INFO.USERNAME = info.username || BOT_ID;
+				BOT_INFO.AVATAR_LINK = info.avatar;
+			}
 			BOT_INFO.DATABASE_NAME = database;
 			BOT_INFO.APPSTATE_NAME = GLOBAL.APPSTATE_FILENAME;
 			BOT_INFO.STARTTIME = process.uptime();
@@ -94,10 +96,13 @@ function start (input) {
 			/// DATABASE RECHECKING
 			await handler_Database.init({ API });
 			
+			/// PREPARE INITIAL INPUTS
+			const Inputs = { API, MODULES };
+			Inputs.CLIENT = GLOBAL.CLIENT;
+			
 			/// NOTIFY MAIN GROUP CHATS
 			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » Notifying Groups.`, 'bot');
 			const notifiedID = {};
-
 			
 			const time = Moment().tz('Asia/Manila').format('MMMM DD, YYYY • HH:mm');
 			for (const id of GLOBAL.CLIENT.CONFIG.mainGroups) {
@@ -113,11 +118,17 @@ function start (input) {
 				}
 			}
 			
-			/// PREPARE INITIAL INPUTS
-			const Inputs = { API, MODULES };
-			Inputs.CLIENT = GLOBAL.CLIENT;
-			
-			
+			// Inform parent process that we're done logging this account
+			await process.send(
+				{
+					code: '-logged',
+					id: BOT_INFO.ID,
+					name: BOT_INFO.FULLNAME,
+					start_time: BOT_INFO.STARTTIME,
+					process_time: process.uptime() - BOT_INFO.STARTTIME
+				}
+			);
+
 		}).catch(async (modelError) => {
 			
 			Logger(modelError, 'error');
@@ -142,7 +153,7 @@ process.on('message', function ( data ) {
 	
 	switch (data.code) {
 		case '-start': 
-			
+			start(data);
 			break;
 		case '-update':
 		

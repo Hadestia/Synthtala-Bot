@@ -181,15 +181,15 @@ async function newSession ( appstate, appStatePath, fileName, restart) {
 		}
 		
 		Logger.makeLog(CLIENT.LOG_PATH, `${(restart) ? 'Restarting' : 'Starting new'} session for ${fileName}`, 'login');
-			
-		let child = ChildProcess.fork(`${CLIENT.DATA_PATH}/bot-session.js`, null, {
+		
+		let child = ChildProcess.fork(`${CLIENT.DATA_PATH}/bot.js`, null, {
 			cwd: __dirname,
 			stdio: 'inherit',
 			shell: true,
 			env: process.env
 		});
 		
-		// Add initial contents
+		// SAVE CHILD DATA
 		const childData = {
 			id: botID,
 			status: 'starting',
@@ -199,11 +199,10 @@ async function newSession ( appstate, appStatePath, fileName, restart) {
 			process: child,
 		};
 		
-		CLIENT.AGENTS[botID] = childData;
-		process.env.IS_SERVICE_RESTARTING = 'false';
+		// -------- START BOT TASK -------- //
 		
 		const message = {
-			message: '-start',
+			code: '-start',
 			ID: botID,
 			CLIENT: CLIENT,
 			APPSTATE: botAppState,
@@ -211,7 +210,12 @@ async function newSession ( appstate, appStatePath, fileName, restart) {
 			APPSTATE_FILENAME: fileName,
 			APPSTATE_PATH: appStatePath
 		};
+		
+		process.env.IS_SERVICE_RESTARTING = 'false';
+		CLIENT.AGENTS[botID] = childData;
 		await child.send(message);
+		
+		// ----------------- COMMUNICATIONS BETWEEN PARENT AND CHILD ----------------- //
 		
 		child.on('close', function (code) {
 			Logger.makeLog(CLIENT.LOG_PATH, `Bot-${botID} » Process was exited with code ${code}`, '--');
@@ -238,10 +242,9 @@ async function newSession ( appstate, appStatePath, fileName, restart) {
 		});
 		
 		child.on('message', async function ( data ) {
-			const msg_signal = data.message;
-			
-			switch (msg_signal) {
-				case '-restart': {
+			switch (data.code) {
+				case '-restart':
+				
 					child.exit(2);
 					child = undefined;
 					await newSession(appstate, appStatePath, fileName, true).then(() => {}).catch((err) => {
@@ -249,8 +252,9 @@ async function newSession ( appstate, appStatePath, fileName, restart) {
 						Logger.makeLog(CLIENT.LOG_PATH, err, 'error');
 					});
 					break;
-				}
-				case '-logged': {
+					
+				case '-logged':
+				
 					Logger.makeLog(CLIENT.LOG_PATH, `${data.id} Took ${data.process_time}MS To Complete`, 'login');
 					Logger.makeLog(CLIENT.LOG_PATH, '─────────────────────────────────────────────', 'login');
 					const restart_count = (CLIENT.AGENTS[data.id] && CLIENT.AGENTS[data.id].restart_count) ? CLIENT.AGENTS[data.id].restart_count + 1 : 0;
@@ -264,12 +268,12 @@ async function newSession ( appstate, appStatePath, fileName, restart) {
 					
 					resolve(data);
 					break;
-				}
-				default: {
+				
+				default:
 					break;
-				}
 			}
 		});
+		
 	}).catch(reject);
 		
 	return promise;
