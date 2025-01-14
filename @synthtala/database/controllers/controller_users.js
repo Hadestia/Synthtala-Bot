@@ -128,33 +128,35 @@ module.exports = function ({ Models, API, textFormat }) {
 	///////// OTHER FUNCTIONS
 	
 	Ctrl.getInfo = async function (ID) {
-		return await API.getUserInfo(ID).then((result) => {
+		let data = null;
+		try {
+			const result = await API.getUserInfo(ID);
 			if (result[ID]) {
-				// make some changes on the result
+				// Make some changes on the result
 				const info = result[ID];
 				const user_name = (info.vanity && info.vanity.length > 0) ? info.vanity : ID;
 				const returnable = {
 					id: ID,
-					name: (info.firstName) ? info.name : `user${ID}`,
+					name: info.firstName ? info.name : `user${ID}`,
 					username: user_name,
 					first_name: info.firstName || textFormat.miscs.noDataTxtFont,
-					gender: (info.gender) ? ((info.gender == 1) ? 'Female' : (info.gender == 2) ? 'Male' : textFormat.miscs.noDataTxtFont) : textFormat.miscs.noDataTxtFont,
-					profileUrl: `www.facebook.com/${user_name}`,
+					gender: info.gender ? (info.gender === 1 ? 'Female' : (info.gender === 2 ? 'Male' : textFormat.miscs.noDataTxtFont)) : textFormat.miscs.noDataTxtFont,
+					profileUrl: `https://www.facebook.com/${user_name}`, // Ensure this is a full URL
 					avatar: Ctrl.getAvatarLink(ID),
 					avatar1: info.thumbSrc,
 					type: info.type,
 					isFriend: info.isFriend || false,
 					isBirthday: info.isBirthday || false
 				};
-				// console.dir(returnable);
-				return returnable;
+				data = returnable;
 			} else {
-				return false;
+				data = false; // User not found
 			}
-		}).catch((error) => {
+		} catch (error) {
 			console.log(error);
-			return false;
-		});
+			data = false; // Handle error
+		}
+		return data; // Return the data
 	}
 
 	Ctrl.getNameUser = async function ( ID ) {

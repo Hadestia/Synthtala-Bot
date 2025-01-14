@@ -1,4 +1,4 @@
-module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, Utils, Logger }) {
+module.exports = function ({ GLOBAL, BOT_INFO, Bans, Users, Threads, Commands, Utils, Logger }) {
 	
 	const Handler = {};
 	
@@ -14,7 +14,7 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 		}
 	}
 	
-	Handler.listen = async function ({ event, API, CLIENT, MODULES, Message }) {
+	Handler.listen = async function ({ event, API, GLOBAL, MODULES, Message }) {
 		
 		if (event.type !== 'message_reply') return;
 		
@@ -26,7 +26,7 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 		const groupData = await Threads.getData(threadID);
 		const groupSettings = (groupData) ? groupData.settings : {};
 			
-		const prefix_used = groupSettings['bot-prefix'] || CLIENT.CONFIG.defaultPrefix;
+		const prefix_used = groupSettings['bot-prefix'] || GLOBAL.CLIENT.CONFIG.defaultPrefix;
 		const replied_messageID = messageReply.messageID;
 
 		if (Handler.dictionary[replied_messageID]) {
@@ -36,10 +36,10 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 			// console.dir(replyInfo);
 			const command_obj = MODULES.commands[replyInfo.commandID];
 			
-			Logger.makeLog(CLIENT.LOG_PATH, `Command-Reply ${replyInfo.commandID} was called by user-${senderID} from thread-${threadID}.`, 'module');
+			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Command-Reply ${replyInfo.commandID} was called by user-${senderID} from thread-${threadID}.`, 'module');
 			// does not belong to the current sender? | Owner/Admin can interact as well
-			const isBotAdmin = CLIENT.CONFIG.botAdmins.includes(senderID);
-			const isBotOwner = CLIENT.CONFIG.botOwners.includes(senderID);
+			const isBotAdmin = GLOBAL.CLIENT.CONFIG.botAdmins.includes(senderID);
+			const isBotOwner = GLOBAL.CLIENT.CONFIG.botOwners.includes(senderID);
 			
 			if (replyInfo.senderID !== senderID) {
 				if (!isBotOwner || !isBotAdmin) {
@@ -84,7 +84,7 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 				);
 			}
 			// Cache Inputs
-			const Inputs = { event, API, CLIENT, BOT_INFO, Utils, Message, Bans, Users, Threads, Commands, Logger };
+			const Inputs = { event, API, GLOBAL, BOT_INFO, Utils, Message, Bans, Users, Threads, Commands, Logger };
 			Inputs.ModuleData = command_obj.moduleData;
 			Inputs.Post = Post;
 			Inputs.replyInfo = replyInfo;
@@ -101,7 +101,7 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 					}
 				}
 			} catch (err) {
-				Logger.makeLog(CLIENT.LOG_PATH, `Command-Reply ${replyInfo.commandID} ERROR: ${err}.`, 'error');
+				Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Command-Reply ${replyInfo.commandID} ERROR: ${err}.`, 'error');
 				console.error(err);
 			}
 		}

@@ -1,4 +1,4 @@
-module.exports = function ({ CLIENT, BOT_INFO, Message, Bans, Users, Threads, Commands, Utils, Logger }) {
+module.exports = function ({ GLOBAL, BOT_INFO, Message, Bans, Users, Threads, Commands, Utils, Logger }) {
 	
 	const Handler = {};
 	
@@ -14,7 +14,7 @@ module.exports = function ({ CLIENT, BOT_INFO, Message, Bans, Users, Threads, Co
 		}
 	}
 	
-	Handler.listen = async function ({ event, API, CLIENT, MODULES, Message }) {
+	Handler.listen = async function ({ event, API, GLOBAL, MODULES, Message }) {
 		
 		if (event.type !== 'message_reaction') return;
 		
@@ -26,7 +26,7 @@ module.exports = function ({ CLIENT, BOT_INFO, Message, Bans, Users, Threads, Co
 				
 			const command_obj = MODULES.commands[reactionInfo.commandID];
 			
-			Logger.makeLog(CLIENT.LOG_PATH, `Command-Reaction ${reactionInfo.commandID} was called by user-${senderID} from thread-${threadID}.`, 'module');
+			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Command-Reaction ${reactionInfo.commandID} was called by user-${senderID} from thread-${threadID}.`, 'module');
 
 			// delete reply info function
 			const deleteReactionInfo = async function ( index ) {
@@ -35,8 +35,8 @@ module.exports = function ({ CLIENT, BOT_INFO, Message, Bans, Users, Threads, Co
 			}
 					
 			// does not belong to the current sender? | Owner/Admin can interact as well
-			const isBotAdmin = CLIENT.CONFIG.botAdmins.includes(userID);
-			const isBotOwner = CLIENT.CONFIG.botOwners.includes(userID);
+			const isBotAdmin = GLOBAL.CLIENT.CONFIG.botAdmins.includes(userID);
+			const isBotOwner = GLOBAL.CLIENT.CONFIG.botOwners.includes(userID);
 			const userName = await Users.getNameUser(userID);
 
 			if (reactionInfo.userID !== userID) {
@@ -67,7 +67,7 @@ module.exports = function ({ CLIENT, BOT_INFO, Message, Bans, Users, Threads, Co
 			Post.deleteReactionInfo = deleteReactionInfo;
 				
 			/// Prepare to execute command
-			const Inputs = { event, API, CLIENT, BOT_INFO, Utils, Message, Post, Bans, Users, Threads, Commands, Logger };
+			const Inputs = { event, API, GLOBAL, BOT_INFO, Utils, Message, Post, Bans, Users, Threads, Commands, Logger };
 			Inputs.ModuleData = command_obj.moduleData;
 			Inputs.reactionInfo = reactionInfo;
 			
@@ -82,7 +82,7 @@ module.exports = function ({ CLIENT, BOT_INFO, Message, Bans, Users, Threads, Co
 					}
 				}
 			} catch (err) {
-				Logger.makeLog(CLIENT.LOG_PATH, `Command-Reaction ${reactionInfo.commandID} ERROR: ${err}`, 'error');
+				Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Command-Reaction ${reactionInfo.commandID} ERROR: ${err}`, 'error');
 				console.error(err);
 			}
 		}

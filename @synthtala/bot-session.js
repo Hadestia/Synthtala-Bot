@@ -66,17 +66,6 @@ function start( input ) {
 	Login.then(async function ( LoginData ) {
 		
 		if ( LoginData.ERROR ) {
-			/* 
-			const regExp = new RegExp('^\!.*?\.json$'); // Exclude appstate that has this (!) symbol on the beginning
-			/// Delete this appstate
-			if (!regExp.test(APPSTATE_PATH)) {
-				if (APPSTATE_PATH !== '' && APPSTATE_FILENAME !== '<ENV>') {
-					Logger.makeLog(CLIENT.LOG_PATH, `Deleting ${APPSTATE_PATH} ...`, 'warn');
-					Filesystem.unlinkSync(APPSTATE_PATH);
-					Logger.makeLog(CLIENT.LOG_PATH, `Appstate was deleted!!`, 'warn');
-				}
-			}
-			*/
 			process.exit(0);
 		}
 		
@@ -319,7 +308,7 @@ function start( input ) {
 let error_count = 0
 async function handleListenerError (listen_error, saveAppState, CLIENT, BOT_INFO) {
 	console.error(listen_error.error);
-	Logger(`Bot-${BOT_INFO.ID}(${BOT_INFO.NAME}) » Error occured while listening, Kindly check Logs.txt for more info`, 'listener');
+	Logger(`Bot-${BOT_INFO.ID}(${BOT_INFO.NAME || ''}) » Error occured while listening, Kindly check Logs.txt for more info`, 'listener');
 	Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID}(${BOT_INFO.NAME}) » Listen Error:\n${listen_error.error}`);
 	
 	if (error_count < 10) {
@@ -327,6 +316,7 @@ async function handleListenerError (listen_error, saveAppState, CLIENT, BOT_INFO
 			await saveAppState();
 			process.exit(0);
 		}
+		error_count++;
 	} else {
 		await saveAppState();
 		process.exit(0);

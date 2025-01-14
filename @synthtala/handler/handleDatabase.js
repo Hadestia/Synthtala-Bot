@@ -1,8 +1,8 @@
 const Filesystem = require('fs-extra');
 
-module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Utils, Logger }) {
+module.exports = function ({ GLOBAL, BOT_INFO, Bans, Users, Threads, Utils, Logger }) {
 	
-	const defaultDatabaseReference = Filesystem.readJsonSync(`${CLIENT.ROOT_PATH}/json/ref-defaultDatabase.json`);
+	const defaultDatabaseReference = Filesystem.readJsonSync(`${GLOBAL.CLIENT.ROOT_PATH}/json/ref-defaultDatabase.json`);
 
 	const Handler = {}
 	Handler.allUserIDs = {};
@@ -37,9 +37,9 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Utils, Logg
 					// Update Group data In Bans Tables
 					bans.NAME = Info.name;
 					Bans.setData(Info.threadID, bans).then(() => {
-						Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » Updated Ban Data For User ${Info.id}`, 'bot')
+						Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » Updated Ban Data For User ${Info.id}`, 'bot')
 					}).catch((e) => {
-						Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » Unable To Update Ban Data For User ${Info.id}!`, 'warn')
+						Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » Unable To Update Ban Data For User ${Info.id}!`, 'warn')
 						console.error(e);
 					});
 					User.banned = true
@@ -51,14 +51,14 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Utils, Logg
 					Handler.allUserIDs[User.USERID] = { last_update: Date.now() };
 					
 					if (isUpdate) {
-						Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » ${obj.signal} Update Table For UserID ${Info.id}(${Info.name})`, 'bot');
+						Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » ${obj.signal} Update Table For UserID ${Info.id}(${Info.name})`, 'bot');
 					} else {
-						Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » ${obj.signal} Table For UserID ${Info.id}(${Info.name})`, 'bot');
+						Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » ${obj.signal} Table For UserID ${Info.id}(${Info.name})`, 'bot');
 					}
 					// console.dir(result);
 					resolve(true);
 				}).catch((err) => {
-					Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » Unable To Set Or Update Table For UserID ${Info.id}(${Info.name})\n${err}`, 'warn');
+					Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » Unable To Set Or Update Table For UserID ${Info.id}(${Info.name})\n${err}`, 'warn');
 					console.error(err);
 					reject(err);
 				});
@@ -77,7 +77,7 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Utils, Logg
 				
 				if (!isUpdate) {
 					Group = reference;
-					Group.settings['bot-prefix'] = CLIENT.CONFIG.defaultPrefix;
+					Group.settings['bot-prefix'] = GLOBAL.CLIENT.CONFIG.defaultPrefix;
 				}
 			
 				Group.THREADID = Info.threadID;
@@ -112,9 +112,9 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Utils, Logg
 					// Update Group data In Bans Tables
 					bans.NAME = Info.threadName;
 						Bans.setData(Info.threadID, bans).then(() => {
-					Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » Updated Ban Data For Group ${Info.threadID}`, 'bot')
+					Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » Updated Ban Data For Group ${Info.threadID}`, 'bot')
 					}).catch((e) => {
-						Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » Unable To Update Ban Data For Group ${Info.threadID}!`, 'warn')
+						Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » Unable To Update Ban Data For Group ${Info.threadID}!`, 'warn')
 						console.error(e);
 					});
 					Group.banned = true
@@ -161,14 +161,14 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Utils, Logg
 					Handler.allGroupIDs[Group.THREADID] = { last_update: Date.now() };
 
 					if (isUpdate) {
-						Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » ${obj.signal} Update Table For GroupID ${Info.threadID}(${Info.threadName})`, 'bot');
+						Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » ${obj.signal} Update Table For GroupID ${Info.threadID}(${Info.threadName})`, 'bot');
 					} else {
-						Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » ${obj.signal} Table For GroupID ${Info.threadID}(${Info.threadName})`, 'bot');
+						Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » ${obj.signal} Table For GroupID ${Info.threadID}(${Info.threadName})`, 'bot');
 					}
 					
 					resolve(true);
 				}).catch((err) => {
-					Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » Unable To Set Or Update Table For GroupID ${Info.threadID}(${Info.threadName})\n${err}`, 'warn');
+					Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » Unable To Set Or Update Table For GroupID ${Info.threadID}(${Info.threadName})\n${err}`, 'warn');
 					console.error(err);
 					reject(err);
 				});
@@ -178,11 +178,11 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Utils, Logg
 		});
 	}
 
-	Handler.check = async function ({ event, API, CLIENT }) {
+	Handler.check = async function ({ event, API, GLOBAL }) {
 		
 		return new Promise(async( resolve, reject ) => {
 		
-			if (!CLIENT.CONFIG.database) {
+			if (!GLOBAL.CLIENT.CONFIG.database) {
 				return resolve(true);
 			}
 			
@@ -223,9 +223,9 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Utils, Logg
 		});
 	}
 	
-	Handler.init = async function ({ API, CLIENT, BOT_INFO }) {
+	Handler.init = async function ({ API }) {
 		
-		Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID}(${BOT_INFO.NAME}) » Checking Databases.`, 'bot');
+		Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID}(${BOT_INFO.NAME}) » Checking Databases.`, 'bot');
 		let allUsers = await Users.getAll([ 'USERID', 'name', 'experience', 'banned', 'data' ]);
 		let allThreads = await Threads.getAll([ 'THREADID', 'threadInfo', 'banned', 'inventory', 'economy', 'settings', 'data', 'afk' ]);
 		
@@ -241,7 +241,7 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Utils, Logg
 			}
 		}
 		
-		const mainGroups = CLIENT.CONFIG.mainGroups || [];
+		const mainGroups = GLOBAL.CLIENT.CONFIG.mainGroups || [];
 		for (const Group of allThreads) {
 			const ID = String(Group.THREADID);
 			const Info = await Threads.getInfo(ID);
@@ -250,7 +250,7 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Utils, Logg
 				if (Info.cannotReplyReason) {
 					API.deleteThread(ID, (e)=>{});
 					await Threads.deleteData(ID);
-					Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID}(${BOT_INFO.NAME}) » Group ${ID}(${Info.threadName}) was deleted from database due bot was unable to interact with a reason: ${Info.cannotReplyReason}`, 'database');
+					Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID}(${BOT_INFO.NAME}) » Group ${ID}(${Info.threadName}) was deleted from database due bot was unable to interact with a reason: ${Info.cannotReplyReason}`, 'database');
 				} else {
 					// Check if group was inactive for 5 days
 					const timeDiff = Math.abs(Date.now() - Info.timestamp);
@@ -264,7 +264,7 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Utils, Logg
 								API.removeUserFromGroup(BOT_INFO.ID, ID, (e)=>{});
 								API.deleteThread(ID, (e)=>{});
 								await Threads.deleteData(ID);
-								Logger.makeLog(CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID}(${BOT_INFO.NAME}) » Group ${ID}(${Info.threadName}) was deleted from database due inactivity of ${howLong}`, 'database');
+								Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID}(${BOT_INFO.NAME}) » Group ${ID}(${Info.threadName}) was deleted from database due inactivity of ${howLong}`, 'database');
 							}
 						);
 					} else {

@@ -1,17 +1,17 @@
 const Filesystem = require('fs-extra');
 const Path = require('path');
 
-module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, Utils, Logger }) {
+module.exports = function ({ GLOBAL, BOT_INFO, Bans, Users, Threads, Commands, Utils, Logger }) {
 	
 	const moment = require('moment-timezone');
 	
 
 	const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-	const databaseReference = Filesystem.readJsonSync(`${CLIENT.ROOT_PATH}/json/ref-defaultDatabase.json`);
+	const databaseReference = Filesystem.readJsonSync(`${GLOBAL.CLIENT.ROOT_PATH}/json/ref-defaultDatabase.json`);
 
 	const Handler = {};
 	
-	Handler.listen = async function ({ event, API, CLIENT, MODULES, Message, HandleCommandReply, CharacterAI }) {
+	Handler.listen = async function ({ event, API, GLOBAL, MODULES, Message, HandleCommandReply, CharacterAI }) {
 			
 		const timeExecuted = moment.tz('Asia/Manila').format('DD/MM/YYYY - HH:MM:ss');
 		let { body, mentions, senderID, threadID, messageID, isGroup } = event;
@@ -28,7 +28,7 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 			
 		const bot_mention_prefix = (mentions && Object.keys(mentions).length > 0 && Object.keys(mentions)[0] == BOT_INFO.ID) ? true : false;
 		const bot_was_mentioned_name = (bot_mention_prefix) ? (Object.values(mentions)[0]).replace('@', '') : BOT_INFO.ID;
-		const prefix_used = (groupSettings.hasOwnProperty('bot-prefix')) ? groupSettings['bot-prefix'] : CLIENT.CONFIG.defaultPrefix;
+		const prefix_used = (groupSettings.hasOwnProperty('bot-prefix')) ? groupSettings['bot-prefix'] : GLOBAL.CLIENT.CONFIG.defaultPrefix;
 		//const prefixRegex = new RegExp(`^(<@!?${senderID}>|${escapeRegex(prefix_used)})\\s*`);
 		const prefixRegex = new RegExp(`^(<@!?${senderID}>|\@${bot_was_mentioned_name}|${escapeRegex(prefix_used)})\\s*`);
 		
@@ -36,22 +36,22 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 		if (!prefixRegex.test(body)) {
 			// @Finding prefix
 			if (body.toLowerCase() === 'prefix') {
-				showHelpContents ({ event, arguments: [ 'usage' ], prefix_used, API, BOT_INFO, CLIENT, MODULES, Message, Utils, Users });
+				showHelpContents ({ event, arguments: [ 'usage' ], prefix_used, API, BOT_INFO, GLOBAL, MODULES, Message, Utils, Users });
 			}
 			return;
 		}
 		
-		const white_listed_ids = [ ...CLIENT.CONFIG.botOwners, ...CLIENT.CONFIG.botAdmins ];
+		const white_listed_ids = [ ...GLOBAL.CLIENT.CONFIG.botOwners, ...GLOBAL.CLIENT.CONFIG.botAdmins ];
 		const group_ban = await Bans.getData(threadID);
 		const user_ban = await Bans.getData(senderID);
 			
 		// Maintenance?
-    	if (CLIENT.CONFIG.isMaintenance && !white_listed_ids.includes(senderID)) {
+    	if (GLOBAL.CLIENT.CONFIG.isMaintenance && !white_listed_ids.includes(senderID)) {
     		return Message.reply(Utils.textFormat('system', 'underMaintenance'));
 		}
 		
 		// Private message restrictions
-		if (!isGroup && !CLIENT.CONFIG.allowPrivateMessage && !white_listed_ids.includes(senderID)) {
+		if (!isGroup && !GLOBAL.CLIENT.CONFIG.allowPrivateMessage && !white_listed_ids.includes(senderID)) {
 			return Message.reply(Utils.textFormat('system', 'offPrivateMessage'));
 		}
 			
@@ -91,7 +91,7 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 		const commandTyped = ((arguments.length > 1 && arguments[0] === '') ? arguments[1] : arguments.shift()).toLowerCase();
 			
 		if (commandTyped == 'help') {
-			showHelpContents ({ event, arguments, prefix_used, API, BOT_INFO, CLIENT, MODULES, Message, Utils, Users });
+			showHelpContents ({ event, arguments, prefix_used, API, BOT_INFO, GLOBAL, MODULES, Message, Utils, Users });
 			return;
 		}
 			
@@ -111,7 +111,7 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 			return;
 		}
 		
-		Logger.makeLog(CLIENT.LOG_PATH, `Command ${commandTargetID} was called by user-${senderID} from thread-${threadID}.`, 'module');
+		Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Command ${commandTargetID} was called by user-${senderID} from thread-${threadID}.`, 'module');
 			
 		const time_initiated = Date.now();
 		const absoluteUserArgInput = userWholeInput.slice(commandTyped.length).trim();
@@ -164,8 +164,8 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 		//  1 - Group Admins
 		//  2 - Bot Admins
 		const commandPermission = moduleData.permission;
-		const isBotAdmin = CLIENT.CONFIG.botAdmins.includes(senderID);
-		const isBotOwner = CLIENT.CONFIG.botOwners.includes(senderID);
+		const isBotAdmin = GLOBAL.CLIENT.CONFIG.botAdmins.includes(senderID);
+		const isBotOwner = GLOBAL.CLIENT.CONFIG.botOwners.includes(senderID);
 		const isGroupAdmin = (event.isGroup) ? groupInfo.adminIDs.includes(senderID) : false;
 				
 		let isEligible = false
@@ -218,9 +218,9 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 			if ((moduleData.cooldown || 0) !== 0 && !isBotOwner) {
 				commandData.cooldowns[senderID] = Date.now();
 				await Commands.setData(moduleData.id, commandData ).then((obj) => {
-					Logger.makeLog(CLIENT.LOG_PATH, `Command ${commandTargetID} ${obj.signal} Data For User-${senderID}.`, 'module');
+					Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Command ${commandTargetID} ${obj.signal} Data For User-${senderID}.`, 'module');
 				}).catch((err) => {
-					Logger.makeLog(CLIENT.LOG_PATH, err, 'module');
+					Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, err, 'module');
 					console.error(err);
 				});
 			}
@@ -229,12 +229,12 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 			return Message.reply(customMsg || Utils.textFormat('commands', 'cmdInvalidSyntax', `${prefix_used}${moduleData.name} ${moduleData.usage}`));
 		}
 		Post.logModuleError = function (error) {
-			Logger.makeLog(CLIENT.LOG_PATH, `${moduleData.id} Occurred An Error:`, 'module');
-			Logger.makeLog(CLIENT.LOG_PATH, error, 'module');
+			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `${moduleData.id} Occurred An Error:`, 'module');
+			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, error, 'module');
 		}
 			
 		/// Prepare to execute command
-		const Inputs = { API, CLIENT, BOT_INFO, MODULES, Message, Post, Utils, Bans, Users, Threads, Commands, Logger };
+		const Inputs = { API, GLOBAL, BOT_INFO, MODULES, Message, Post, Utils, Bans, Users, Threads, Commands, Logger };
 		Inputs.ModuleData = moduleData;
 		Inputs.args = arguments;
 		Inputs.body = absoluteUserArgInput;
@@ -260,7 +260,7 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 			}
 			return;
 		} catch (err) {
-			Logger.makeLog(CLIENT.LOG_PATH, `Command ${commandTargetID} ERROR: ${err}`, 'module');
+			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Command ${commandTargetID} ERROR: ${err}`, 'module');
 			console.error(err);
 		}
 	}
@@ -268,21 +268,21 @@ module.exports = function ({ CLIENT, BOT_INFO, Bans, Users, Threads, Commands, U
 	return Handler;
 }
 
-async function showHelpContents ({ event, arguments, prefix_used, API, BOT_INFO, CLIENT, MODULES, Utils, Users, Message }) {
+async function showHelpContents ({ event, arguments, prefix_used, API, BOT_INFO, GLOBAL, MODULES, Utils, Users, Message }) {
 	
-	const cmdCategoriesReference = CLIENT.COMMAND_CATEGORY_REF;
+	const cmdCategoriesReference = GLOBAL.CLIENT.COMMAND_CATEGORY_REF;
 	
 	let banners = [], chosenBannerPath;
-	const responseDecor = (['img', 'gif'].includes(CLIENT.CONFIG.helpCommandDecor));
-	const decorType = CLIENT.CONFIG.helpCommandDecor;
+	const responseDecor = (['img', 'gif'].includes(GLOBAL.CLIENT.CONFIG.helpCommandDecor));
+	const decorType = GLOBAL.CLIENT.CONFIG.helpCommandDecor;
 	
 	if (responseDecor) {
 		if (decorType === 'img') {
-			banners = Filesystem.readdirSync(Path.join(CLIENT.CACHE_PATH, 'keep', 'banners')).filter((file) => file.endsWith('.png'));
+			banners = Filesystem.readdirSync(Path.join(GLOBAL.CLIENT.CACHE_PATH, 'keep', 'banners')).filter((file) => file.endsWith('.png'));
 		} else {
-			banners = Filesystem.readdirSync(Path.join(CLIENT.CACHE_PATH, 'keep', 'banners')).filter((file) => file.endsWith('.gif'));
+			banners = Filesystem.readdirSync(Path.join(GLOBAL.CLIENT.CACHE_PATH, 'keep', 'banners')).filter((file) => file.endsWith('.gif'));
 		}
-		chosenBannerPath = Path.join(CLIENT.CACHE_PATH, 'keep', 'banners', banners[Math.floor(Math.random() * banners.length)]);
+		chosenBannerPath = Path.join(GLOBAL.CLIENT.CACHE_PATH, 'keep', 'banners', banners[Math.floor(Math.random() * banners.length)]);
 	}
 	
 	const { threadID, messageID } = event;

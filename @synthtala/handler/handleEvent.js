@@ -2,12 +2,12 @@ module.exports = function ({ BOT_INFO, Bans, Users, Threads, Commands, Utils, Lo
 	
 	const Handler = {};
 	
-	Handler.listen = async function ({ event, API, CLIENT, MODULES, HandleDatebase, Message }) {
+	Handler.listen = async function ({ event, API, GLOBAL, MODULES, HandleDatebase, Message }) {
 		
 		if (event.type !== 'event') return;
 		
 		// Cache Inputs
-		const Inputs = { event, API, CLIENT, BOT_INFO, Utils, Message, Bans, Users, Threads, Commands, Logger, HandleDatebase };
+		const Inputs = { event, API, GLOBAL, BOT_INFO, Utils, Message, Bans, Users, Threads, Commands, Logger, HandleDatebase };
 		
 		for (const evt_id in MODULES.events) {
 			
@@ -19,7 +19,7 @@ module.exports = function ({ BOT_INFO, Bans, Users, Threads, Commands, Utils, Lo
 			const matchedEventType = (moduleData.eventType.indexOf(event.logMessageType) !== -1) ? true : false;
 			
 			if (matchedEventType) {
-				Logger.makeLog(CLIENT.LOG_PATH, `Event ${evt_id} was called at thread-${event.threadID}.`, 'module');
+				Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Event ${evt_id} was called at thread-${event.threadID}.`, 'module');
 				const moduleScript = require(event_obj.moduleScriptPath);
 				try {
 					if (moduleScript.run && typeof(moduleScript.run) === 'function') {
@@ -30,7 +30,7 @@ module.exports = function ({ BOT_INFO, Bans, Users, Threads, Commands, Utils, Lo
 						}
 					}
 				} catch (err) {
-					Logger.makeLog(CLIENT.LOG_PATH, `Event ${evt_id} ERROR: ${err}.`, 'error');
+					Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Event ${evt_id} ERROR: ${err}.`, 'error');
 					console.error(err);
 				}
 			}
