@@ -104,7 +104,9 @@ function start (input) {
 			);
 			
 			API.listenMqtt(async (err, event) => {
-				if (event.type == 'message') {
+				if (err) {
+					console.error(err);
+				} else if (event && event.type == 'message') {
 					API.sendMessage(event.body, event.threadID);
 				}
 			});
