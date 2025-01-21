@@ -182,12 +182,16 @@ async function newSession ( appstate, appStatePath, fileName, restart) {
 		
 		Logger.makeLog(CLIENT.LOG_PATH, `${(restart) ? 'Restarting' : 'Starting new'} session for ${fileName}`, 'login');
 		
-		let child = ChildProcess.fork(`${CLIENT.DATA_PATH}/bot.js`, null, {
-			cwd: __dirname,
-			stdio: 'inherit',
-			shell: true,
-			env: process.env
-		});
+		let child = ChildProcess.fork(
+			`${CLIENT.DATA_PATH}/bot.js`,
+			null,
+			{
+				cwd: __dirname,
+				stdio: 'inherit',
+				shell: true,
+				env: process.env
+			}
+		);
 		
 		// SAVE CHILD DATA
 		const childData = {

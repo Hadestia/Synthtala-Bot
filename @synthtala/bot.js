@@ -56,7 +56,7 @@ function start (input) {
 		// GET MODELS & START
 		await DBModels({ sequelize, Sequelize }).then(async (Models) => {
 			
-			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${GLOBAL.ID} » Database Models Initialized!, Processing pre-listening procedure...`, 'database');
+			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${GLOBAL.ID} » Processing pre-listening procedure...`, 'database');
 			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${GLOBAL.ID} » Fetching Bot Information & Utilities...`, 'bot');
 			
 			const textFormat = Filesystem.readJsonSync(Path.join(GLOBAL.CLIENT.ROOT_PATH, 'json', 'ref-textFormat.json'));
@@ -86,7 +86,7 @@ function start (input) {
 			
 			/// DATABASE RECHECKING
 			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » Checking Databases.`, 'bot');
-			await handler_Database.init({ API });
+			// await handler_Database.init({ API });
 			
 			/// PREPARE INITIAL INPUTS
 			const Inputs = { API };
@@ -114,7 +114,7 @@ function start (input) {
 		}).catch(async (modelError) => {
 			
 			Logger(modelError, 'error');
-			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${GLOBAL.ID} » Unable to create database model for this account, Exiting process...`, 'database');
+			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${GLOBAL.ID} » Unable to create database model, Exiting process...`, 'database');
 			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, modelError);
 			process.exit(0);
 		});
