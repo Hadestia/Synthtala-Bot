@@ -1,7 +1,7 @@
 const Path = require('path');
 const Filesystem = require('fs-extra');
 const Moment = require('moment-timezone');
-const BotLogin = require('ryuu-fca-api');
+const BotLogin = require('../bin/@fb-chat-api');
 const Logger = require(Path.resolve(`${__dirname}/../utilities/logger.js`));
 
 // ----------------- GLOBAL  ----------------- //
