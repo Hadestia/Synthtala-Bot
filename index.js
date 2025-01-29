@@ -347,28 +347,27 @@ async function loginAgents() {
 		});
 	}
 	
-	/*
 	for (const candidate of credentials) {
+		
 		const candidatePath = Path.join(CLIENT.APPSTATE_PATH, candidate);
-		const credentialObj = require(candidatePath);
-		if (!appState) {
-			Logger.makeLog(CLIENT.LOG_PATH, `Appstate "${candidate}" was not a valid JSON!`, 'warn');
-			// Filesystem.unlinkSync(candidatePath);
-			// Logger.makeLog(CLIENT.LOG_PATH, `File "${candidate}" was deleted!`, 'warn');
-		} else {
-			// Parse appstate and create Session
-			// const appstate = JSON.stringify(appState);
-			await newSession(credentialObj, candidatePath, candidate, false).then((data) => {}).catch((err) => {
+		
+		try {
+			
+			const appstateObj = require(candidatePath);
+			await newSession(appstateObj, candidatePath, candidate, false).then((data) => {}).catch((err) => {
 				Logger.makeLog(CLIENT.LOG_PATH, `${candidate} » Error While Starting Session`, 'error');
 				Logger.makeLog(CLIENT.LOG_PATH, err, 'error');
 			});
+			
+		} catch (err) {
+			Logger.makeLog(CLIENT.LOG_PATH, `Appstate "${candidate}" was not a valid JSON!`, 'warn');
+			console.error(err);
 		}
 	}
 	
 	if (credentials.length == 0) { // && !process.env.MAIN_APPSTATE) {
 		Logger.makeLog(CLIENT.LOG_PATH, `There's no credentials found to login.`, '--');
 	}
-	*/
 }
 
 // ────────────────────────────── # Starter ──────────────────────────────

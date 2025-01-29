@@ -1,0 +1,24 @@
+SynthTala | January/23/2025 11:03 AM ⟩ Fetching Module files...
+SynthTala | January/23/2025 11:03 AM ⟩ draft-tools.json: Collecting drafts..
+SynthTala | January/23/2025 11:03 AM ⟩ Initialized Draft[$cmd-fontStyle].
+SynthTala | January/23/2025 11:03 AM ⟩ Successfully initialized 1/1 modules.
+SynthTala | January/23/2025 11:03 AM ⟩ ─────────────────────────────────────────────
+SynthTala | January/23/2025 11:03 AM ⟩ Starting new session for 100068705263441.json
+SynthTala | January/23/2025 11:03 AM ⟩ Server » https://synthtala-bot.onrender.com
+SynthTala | January/23/2025 11:03 AM ⟩ Server Status » ONLINE - running on port 10000
+SynthTala | January/23/2025 11:03 AM ⟩ Bot-100074862181079 » Processing pre-listening procedure...
+SynthTala | January/23/2025 11:03 AM ⟩ Bot-100074862181079 » Fetching Bot Information & Utilities...
+SynthTala | January/23/2025 11:03 AM ⟩ Bot-100074862181079 » Preparing Handlers...
+SynthTala | January/23/2025 11:03 AM ⟩ Bot-100074862181079 » Checking Databases.
+SynthTala | January/23/2025 11:03 AM ⟩ 100074862181079 Took 0.08817465400000124MS To Complete
+SynthTala | January/23/2025 11:03 AM ⟩ ─────────────────────────────────────────────
+SynthTala | January/23/2025 11:03 AM ⟩ 100074862181079.json » Error While Starting Session
+SynthTala | January/23/2025 11:03 AM ⟩ AppStateError: Duplicate app state detected
+    at error (/storage/emulated/0/.GitHub/Synthtala-Bot/utilities/appStateUtil.js:6:12)
+    at /storage/emulated/0/.GitHub/Synthtala-Bot/utilities/appStateUtil.js:120:20
+    at new Promise (<anonymous>)
+    at module.exports.parse (/storage/emulated/0/.GitHub/Synthtala-Bot/utilities/appStateUtil.js:62:9)
+    at newSession (/storage/emulated/0/.GitHub/Synthtala-Bot/index.js:177:22)
+    at loginAgents (/storage/emulated/0/.GitHub/Synthtala-Bot/index.js:357:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async startServer (/storage/emulated/0/.GitHub/Synthtala-Bot/index.js:453:2)

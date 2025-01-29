@@ -71,18 +71,23 @@ module.exports.parse = function ( credentialObj, path, CLIENT ) {
 			
 			let appstate = credentialObj.appstate;
 			
-			if (!appstate.some(obj => typeof(obj) == 'object')) {
-				return reject(error(`${path} expect OBJECTS[] but got different value!`));
-			}
 			
-			if (appstate.some(i => i.name)) {
+			appstate.forEach(obj => {
+				if (typeof(obj) !== 'object') {
+					return reject(error(`${path} expect OBJECTS[] but got different value!`));
+				}
+			});
+			
+			appstate.forEach(obj => {
 				// fix invalid "key" keys
-				appstate = appstate.map(i => {
-					i.key = i.name;
-					delete i.name;
-					return i;
-				});
-			} 
+				if (obj.name) {
+					appstate = appstate.map(i => {
+						i.key = i.name;
+						delete i.name;
+						return i;
+					});
+				}
+			});
 
 			if (!appstate.some(i => i.key)) {
 				// missing "key" key 

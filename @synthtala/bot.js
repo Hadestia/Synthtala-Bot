@@ -1,26 +1,11 @@
 const Path = require('path');
 const Filesystem = require('fs-extra');
 const Moment = require('moment-timezone');
-const BotLogin = require('ws3-fca');
+const BotLogin = require('ryuu-fca-api');
 const Logger = require(Path.resolve(`${__dirname}/../utilities/logger.js`));
-const DBModels = require('./database/db_models.js');
 
 // ----------------- GLOBAL  ----------------- //
 const GLOBAL = {};
-
-
-function getDBControllers ( inputs ) {
-	
-	const controllerPath = Path.join(GLOBAL.CLIENT.DATA_PATH, 'database', 'controllers');
-
-	const Bans = require(Path.join(controllerPath, 'controller_bans.js'))(inputs);
-	const Users = require(Path.join(controllerPath, 'controller_users.js'))(inputs);
-	const Threads = require(Path.join(controllerPath, 'controller_threads.js'))(inputs);
-	const Commands = require(Path.join(controllerPath, 'controller_commands.js'))(inputs);
-		
-	return { Bans, Users, Threads, Commands };
-}
-
 
 function start (input) {
 	
@@ -32,7 +17,7 @@ function start (input) {
 	const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 	
 	// Login Promises
-	const Login = new Promise(function (resolved, reject) {
+	const Login = new Promise(function (resolve, reject) {
 		
 		const appState = JSON.parse(GLOBAL.APPSTATE);
 		let fcaOption = GLOBAL.CLIENT.CONFIG.FCAOption;
@@ -42,30 +27,21 @@ function start (input) {
 			if (authError) {
 				reject(authError);
 			}
-			resolved({ API });
+			resolve({ API });
 		});
 	});
 	
 	Login.then( async ({ API }) => {
 		/// Initialize Database
-		const database = `${GLOBAL.ID}.sqlite`;
-		const databaseName = `${GLOBAL.CLIENT.DATA_PATH}/database/datas/${database}`;
-		const { sequelize, Sequelize } = require('./database/db_auth.js')(databaseName);
-		await sequelize.authenticate();
-		
-		// GET MODELS & START
-		await DBModels({ sequelize, Sequelize }).then(async (Models) => {
+		const Database = require('./database/low_db.js');
+		await Database({ GLOBAL }).then(async ({ Bans, Users, Threads, Commands }) => {
 			
 			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${GLOBAL.ID} » Processing pre-listening procedure...`, 'database');
 			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${GLOBAL.ID} » Fetching Bot Information & Utilities...`, 'bot');
 			
-			const textFormat = Filesystem.readJsonSync(Path.join(GLOBAL.CLIENT.ROOT_PATH, 'json', 'ref-textFormat.json'));
-			const { Bans, Users, Threads, Commands } = getDBControllers({ API, textFormat, Models });
-			
 			// EXTEND BOT INFORMATION
 			const BOT_INFO = {};
 			BOT_INFO.ID = GLOBAL.ID;
-			BOT_INFO.DATABASE_NAME = database;
 			BOT_INFO.APPSTATE_NAME = GLOBAL.APPSTATE_FILENAME;
 			BOT_INFO.STARTTIME = process.uptime();
 			
@@ -86,12 +62,19 @@ function start (input) {
 			
 			/// DATABASE RECHECKING
 			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${BOT_INFO.ID} » Checking Databases.`, 'bot');
-			// await handler_Database.init({ API });
 			
 			/// PREPARE INITIAL INPUTS
 			const Inputs = { API };
 			Inputs.CLIENT = GLOBAL.CLIENT;
 			Inputs.MODULES = GLOBAL.MODULES;
+			
+			API.listenMqtt(async (err, event) => {
+				if (err) {
+					console.error(err);
+				} else if (event && event.type == 'message') {
+					API.sendMessage(event.body, event.threadID);
+				}
+			});
 			
 			// Inform parent process that we're done logging this account
 			await process.send(
@@ -102,21 +85,14 @@ function start (input) {
 					process_time: process.uptime() - BOT_INFO.STARTTIME
 				}
 			);
-			
-			API.listenMqtt(async (err, event) => {
-				if (err) {
-					console.error(err);
-				} else if (event && event.type == 'message') {
-					API.sendMessage(event.body, event.threadID);
-				}
-			});
 
-		}).catch(async (modelError) => {
+		}).catch(async (databaseError) => {
 			
-			Logger(modelError, 'error');
-			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${GLOBAL.ID} » Unable to create database model, Exiting process...`, 'database');
-			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, modelError);
+			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `Bot-${GLOBAL.ID} » Unable to initiate database, Exiting process...`, 'database');
+			Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, databaseError);
+			console.error(databaseError);
 			process.exit(0);
+			
 		});
 		
 	}).catch((authError) => {
@@ -125,6 +101,7 @@ function start (input) {
 		Logger.makeLog(GLOBAL.CLIENT.LOG_PATH, `${msg}\n${authError}`, 'login');
 		console.error(authError);
 		process.exit(0);
+		
 	});
 }
 
