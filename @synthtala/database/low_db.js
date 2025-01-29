@@ -7,6 +7,8 @@ module.exports = async function (inputs) {
 		// Fetch Controllers
 		const controllerPath = Path.join(GLOBAL.CLIENT.DATA_PATH, 'database', 'controllers');
 		
+		let Bans, Users, Threads, Commands
+		resolve({ Bans, Users, Threads, Commands });
 		/*
 		const Bans = await require(Path.join(controllerPath, 'controller_bans.js'))(inputs);
 		const Users = await require(Path.join(controllerPath, 'controller_users.js'))(inputs);
@@ -29,7 +31,6 @@ module.exports = async function (inputs) {
 		}
 		*/
 		
-		resolve();
 	});
 	
 	return promise;
