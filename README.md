@@ -1,4 +1,4 @@
-# Nasmerah-Bot - Your Facebook Messenger Bot
+# Synthtala-Bot - Your Facebook Messenger Bot
 
 [Nasmerah-Bot](https://github.com/0x3EF8/Hexabot) is a Facebook Messenger bot developed by [Christian Roldan](https://github.com/Hadestia). It is designed to assist people with various features, including AI-powered responses, file searches, music and video searches, and more. The bot is built using the unofficial Facebook library and integrates with APIs to provide a wide range of capabilities.
 
